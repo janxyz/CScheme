@@ -6,6 +6,7 @@ test_%: LDLIBS += -lcmocka
 bin=test_objects
 obj = obj.o \
       boolean.o \
+      string.o \
       test_objects.o
 dep=$(obj:.o=.d)
 
@@ -19,4 +20,4 @@ clean:
 test: test_objects
 	./test_objects
 
-test_objects: obj.o boolean.o
+test_objects: obj.o boolean.o string.o

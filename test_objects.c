@@ -9,6 +9,8 @@
 #include "obj.h"
 #include "boolean.h"
 #include "string.h"
+#include "empty_list.h"
+#include "pair.h"
 
 static void test_scm_eq_p(void** state)
 {
@@ -43,6 +45,23 @@ static void test_scm_string(void** state)
     assert_true(strcmp("Hello World", c_string((void*)s)) == 0);
 }
 
+static void test_scm_null_p(void** state)
+{
+    (void)state;
+    assert_true(scm_null_p(scm_the_empty_list) == scm_true);
+    assert_true(scm_null_p(scm_true) == scm_false);
+    assert_true(scm_null_p(scm_false) == scm_false);
+}
+
+static void test_scm_pair(void** state)
+{
+    (void)state;
+    struct scm_obj* p = scm_cons((struct scm_obj*)scm_true, (struct scm_obj*)scm_false);
+    assert_true(scm_pair_p(p) == scm_true);
+    assert_true(scm_car(p) == scm_true);
+    assert_true(scm_cdr(p) == scm_false);
+}
+
 int main(void)
 {
     const struct CMUnitTest tests[] = {
@@ -50,6 +69,8 @@ int main(void)
         cmocka_unit_test(test_scm_eq_p_scm_string),
         cmocka_unit_test(test_scm_boolean_p),
         cmocka_unit_test(test_scm_string),
+        cmocka_unit_test(test_scm_null_p),
+        cmocka_unit_test(test_scm_pair),
     };
     return cmocka_run_group_tests(tests, NULL, NULL);
 }

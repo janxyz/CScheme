@@ -1,0 +1,19 @@
+#+columns: %50ITEM(Task) %12Effort(Estimated Effort){:}%CLOCKSUM %TODO %TAGS{X}
+* Implementation
+** TODO Symbols
+** TODO Pairs
+*** DONE cons, car, cdr, pair?
+*** TODO Error handling when car, cdr called on non-pair object
+** DONE Empty list object
+*** DONE null?
+* Research
+** Symbols
+Symbols are objects that are identical if their names are spelled the same way.
+The usual way to implement symbols is to use a symbol table to keep track of all
+the symbols used by the program.
+** Empty list object
+There is only one empty list object. It can be checked with the ~null?~ predicate.
+** Pairs
+Pairs are objects containing two other objects.
+* C programming
+** TODO Read about const correctness in regard to return types

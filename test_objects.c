@@ -1,7 +1,7 @@
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>
-#include <stdint.h>
+/* #include <stdint.h> */
 #include <cmocka.h>
 // strcmp
 #include <string.h>
@@ -11,6 +11,12 @@
 #include "string.h"
 #include "empty_list.h"
 #include "pair.h"
+
+// Mocks
+void __wrap_exit_with_error(char const* format, ...)
+{
+    check_expected(format);
+}
 
 static void test_scm_eq_p(void** state)
 {
@@ -53,13 +59,33 @@ static void test_scm_null_p(void** state)
     assert_true(scm_null_p(scm_false) == scm_false);
 }
 
-static void test_scm_pair(void** state)
+static void test_scm_cons(void** state)
 {
     (void)state;
-    struct scm_obj* p = scm_cons((struct scm_obj*)scm_true, (struct scm_obj*)scm_false);
+    struct scm_obj* car = create_string("CAR");
+    struct scm_obj* cdr = create_string("CDR");
+    struct scm_obj* p = scm_cons(car, cdr);
     assert_true(scm_pair_p(p) == scm_true);
-    assert_true(scm_car(p) == scm_true);
-    assert_true(scm_cdr(p) == scm_false);
+    assert_true(scm_car(p) == car);
+    assert_true(scm_cdr(p) == cdr);
+}
+
+static void test_scm_car_error(void** state)
+{
+    (void)state;
+    expect_any_always(__wrap_exit_with_error, format);
+    scm_car(scm_the_empty_list);
+    scm_car(scm_true);
+    scm_car(scm_false);
+}
+
+static void test_scm_cdr_error(void** state)
+{
+    (void)state;
+    expect_any_always(__wrap_exit_with_error, format);
+    scm_cdr(scm_the_empty_list);
+    scm_cdr(scm_true);
+    scm_cdr(scm_false);
 }
 
 int main(void)
@@ -70,7 +96,9 @@ int main(void)
         cmocka_unit_test(test_scm_boolean_p),
         cmocka_unit_test(test_scm_string),
         cmocka_unit_test(test_scm_null_p),
-        cmocka_unit_test(test_scm_pair),
+        cmocka_unit_test(test_scm_cons),
+        cmocka_unit_test(test_scm_car_error),
+        cmocka_unit_test(test_scm_cdr_error),
     };
     return cmocka_run_group_tests(tests, NULL, NULL);
 }

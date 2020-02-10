@@ -1,11 +1,11 @@
 #+columns: %50ITEM(Task) %12Effort(Estimated Effort){:}%CLOCKSUM %TODO %TAGS{X}
 * Implementation
 ** TODO Symbols
-** TODO Pairs
+** DONE Pairs
 *** DONE cons, car, cdr, pair?
-*** TODO Error handling when car, cdr called on non-pair object
 ** DONE Empty list object
 *** DONE null?
+** TODO Error handling
 * Research
 ** Symbols
 Symbols are objects that are identical if their names are spelled the same way.

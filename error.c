@@ -6,7 +6,8 @@
 // exit, EXIT_FAILURE
 #include <stdlib.h>
 
-void exit_with_error(char const* format, ...) {
+void exit_with_error(char const* format, ...)
+{
     va_list args;
     va_start(args, format);
     vfprintf(stderr, format, args);

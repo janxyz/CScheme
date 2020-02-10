@@ -13,11 +13,13 @@ struct scm_pair {
     struct scm_obj* cdr;
 };
 
-struct scm_obj const* scm_pair_p(struct scm_obj const* const x) {
+struct scm_obj const* scm_pair_p(struct scm_obj const* const x)
+{
     return x->type == TYPE_PAIR ? scm_true : scm_false;
 }
 
-struct scm_obj* scm_cons(struct scm_obj* const car, struct scm_obj* const cdr) {
+struct scm_obj* scm_cons(struct scm_obj* const car, struct scm_obj* const cdr)
+{
     struct scm_pair* p = malloc(sizeof(*p));
     p->type = TYPE_PAIR;
     p->car = car;
@@ -25,7 +27,8 @@ struct scm_obj* scm_cons(struct scm_obj* const car, struct scm_obj* const cdr) {
     return (void*)p;
 }
 
-struct scm_obj* scm_car(struct scm_obj const* const x) {
+struct scm_obj* scm_car(struct scm_obj const* const x)
+{
     if (x->type != TYPE_PAIR) {
         /* exit(0); */
         exit_with_error("Calling car on non-pair object\n");
@@ -33,7 +36,8 @@ struct scm_obj* scm_car(struct scm_obj const* const x) {
     return ((struct scm_pair*)x)->car;
 }
 
-struct scm_obj* scm_cdr(struct scm_obj const* const x) {
+struct scm_obj* scm_cdr(struct scm_obj const* const x)
+{
     if (x->type != TYPE_PAIR) {
         exit_with_error("Calling cdr on non-pair object\n");
     }

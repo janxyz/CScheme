@@ -1,4 +1,6 @@
 *.o
 *.d
+# binaries
+mopl
 # test binaries
 test_objects

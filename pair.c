@@ -30,7 +30,6 @@ struct scm_obj* scm_cons(struct scm_obj* const car, struct scm_obj* const cdr)
 struct scm_obj* scm_car(struct scm_obj const* const x)
 {
     if (x->type != TYPE_PAIR) {
-        /* exit(0); */
         exit_with_error("Calling car on non-pair object\n");
     }
     return ((struct scm_pair*)x)->car;

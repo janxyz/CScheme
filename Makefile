@@ -10,20 +10,22 @@ obj = obj.o \
       string.o \
       empty_list.o \
       pair.o \
+      symbol.o \
       error.o \
-      test_objects.o
+      test_objects.o \
+      mopl.o
 dep=$(obj:.o=.d)
 
 .PHONY: clean test
 
--include $(dep)
-
-mopl: obj.o boolean.o string.o empty_list.o pair.o error.o
+mopl: obj.o boolean.o string.o empty_list.o pair.o symbol.o error.o
 
 test: test_objects
 	./test_objects
 
-test_objects: obj.o boolean.o string.o empty_list.o pair.o error.o
+test_objects: obj.o boolean.o string.o empty_list.o pair.o symbol.o error.o
 
 clean:
 	rm -f $(obj) $(dep) $(bin)
+
+-include $(dep)

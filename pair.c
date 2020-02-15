@@ -1,5 +1,4 @@
 #include "pair.h"
-#include "boolean.h"
 #include "error.h"
 // NULL
 #include <stddef.h>

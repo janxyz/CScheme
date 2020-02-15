@@ -1,7 +1,5 @@
 #include "symbol.h"
-#include "boolean.h"
 #include "pair.h"
-#include "empty_list.h"
 #include "error.h"
 
 // malloc
@@ -43,7 +41,7 @@ struct scm_obj* intern(struct scm_obj** symbol_table, char* str)
         list = scm_cdr(list);
     }
     // not a proper list
-    if (list != scm_the_empty_list) {
+    if (list != scm_nil) {
         exit_with_error("Invaid symbol table\n");
     }
     // Add new symbol to symbol table

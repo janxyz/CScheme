@@ -9,6 +9,12 @@
 #include "symbol.h"
 #include "string.h"
 
+// Mocks
+void __wrap_exit_with_error(char const* format, ...)
+{
+    check_expected(format);
+}
+
 static void test_eval_self_evaluating(void** state)
 {
     (void)state;
@@ -20,10 +26,30 @@ static void test_eval_self_evaluating(void** state)
     assert_true(eval(s, env) == s);
 }
 
+static void test_eval_variable_lookup(void** state)
+{
+    (void)state;
+    struct scm_obj* symbols = (void*)scm_nil;
+    struct scm_obj* var1 = intern(&symbols, "var-1");
+    struct scm_obj* val1 = intern(&symbols, "val-1");
+    struct scm_obj* var2 = intern(&symbols, "var-2");
+    struct scm_obj* val2 = intern(&symbols, "val-2");
+    struct scm_obj* frame1 = scm_cons(scm_cons(var1, val1), (void*)scm_nil);
+    struct scm_obj* frame2 = scm_cons(scm_cons(var2, val2), (void*)scm_nil);
+    // Shadowing old var1 value
+    struct scm_obj* frame3 = scm_cons(scm_cons(var1, val2), (void*)scm_nil);
+    struct scm_obj* env = scm_cons(frame2, scm_cons(frame1, (void*)scm_nil));
+    struct scm_obj* env2 = scm_cons(frame3, env);
+    assert_true(eval(var1, env) == val1);
+    assert_true(eval(var2, env) == val2);
+    assert_true(eval(var1, env2) == val2);
+}
+
 int main(void)
 {
     const struct CMUnitTest tests[] = {
         cmocka_unit_test(test_eval_self_evaluating),
+        cmocka_unit_test(test_eval_variable_lookup),
     };
     return cmocka_run_group_tests(tests, NULL, NULL);
 }

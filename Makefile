@@ -2,7 +2,7 @@ CC=gcc
 CFLAGS=-std=c11 -g -Wall -Wextra -Wpedantic -Wshadow -MMD
 # pattern-specific variable value for all targets prefixed with test_
 test_%: LDLIBS += -lcmocka
-test_objects: CFLAGS += -Wl,--wrap=exit_with_error
+test_%: CFLAGS += -Wl,--wrap=exit_with_error
 
 bin = test_objects \
       test_eval \

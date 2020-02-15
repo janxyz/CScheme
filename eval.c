@@ -19,7 +19,7 @@ struct scm_obj* eval(struct scm_obj* exp, struct scm_obj const* const env)
     } else if (scm_symbol_p(exp) == scm_true) {
         struct scm_obj* binding = env_binding(exp, env);
         if (scm_pair_p(binding) == scm_true) {
-            return scm_car(binding);
+            return scm_cdr(binding);
         } else {
             exit_with_error("Unbound variable\n");
         }
@@ -32,7 +32,8 @@ struct scm_obj* eval(struct scm_obj* exp, struct scm_obj const* const env)
  * Returns the first binding found in list of frames whos car is symbol.
  * Otherwise returns scm_false.
  */
-struct scm_obj* env_binding(struct scm_obj const* env, struct scm_obj const* const symbol)
+
+struct scm_obj* env_binding(struct scm_obj const* const symbol, struct scm_obj const* env)
 {
     while (scm_pair_p(env) == scm_true) {
         struct scm_obj* result = scm_assq(symbol, scm_car(env));

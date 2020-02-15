@@ -12,9 +12,13 @@ struct scm_obj* scm_assq(struct scm_obj const* const key, struct scm_obj const* 
                 return binding;
             }
         } else {
-            exit_with_error("Non-pair object in alist\n");
+            exit_with_error("Improper association list\n");
         }
         alist = scm_cdr(alist);
+    }
+    // End of list but not empty list
+    if (scm_null_p(alist) != scm_true) {
+        exit_with_error("Improper association list\n");
     }
     return (void*)scm_false;
 }

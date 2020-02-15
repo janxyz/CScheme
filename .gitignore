@@ -4,3 +4,5 @@
 mopl
 # test binaries
 test_objects
+test_eval
+test_utils

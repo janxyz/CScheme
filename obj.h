@@ -27,6 +27,5 @@ struct scm_obj const* scm_eq_p(struct scm_obj const* const x, struct scm_obj con
 struct scm_obj const* scm_null_p(struct scm_obj const* const x);
 struct scm_obj const* scm_boolean_p(struct scm_obj const* const x);
 
-
 /* MOPL_OBJ_H */
 #endif

@@ -23,6 +23,11 @@ struct scm_obj* eval(struct scm_obj* exp, struct scm_obj const* const env)
         } else {
             exit_with_error("Unbound variable\n");
         }
+    } else if (scm_pair_p(exp) == scm_true) {
+        struct scm_obj* car = scm_car(exp);
+        if (car == intern("quote")) {
+            return scm_car(scm_cdr(exp));
+        }
     }
     exit_with_error("Unknown expression\n");
     return NULL;

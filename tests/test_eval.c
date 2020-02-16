@@ -44,12 +44,22 @@ static void test_eval_variable_lookup(void** state)
     assert_true(eval(var2, env) == val2);
     assert_true(eval(var1, env2) == val2);
 }
+#include <stdio.h>
+static void test_eval_quote(void** state)
+{
+    (void)state;
+    init_symbol_table();
+    struct scm_obj const* const env = scm_nil;
+    struct scm_obj* exp = scm_cons(intern("quote"), scm_cons(intern("sym"), (void*)scm_nil));
+    assert_ptr_equal(eval(exp, env), intern("sym"));
+}
 
 int main(void)
 {
     const struct CMUnitTest tests[] = {
         cmocka_unit_test(test_eval_self_evaluating),
         cmocka_unit_test(test_eval_variable_lookup),
+        cmocka_unit_test(test_eval_quote),
     };
     return cmocka_run_group_tests(tests, NULL, NULL);
 }

@@ -6,6 +6,13 @@
 ** DONE Empty list object
 *** DONE null?
 ** DONE Error handling
+** Eval [3/6]
+*** DONE Self evaluating expressions
+*** DONE Variable lookups
+*** DONE Quoted expressions
+*** TODO Lambda expression
+*** TODO If expression
+*** TODO Function application
 * Research
 ** Symbols
 Symbols are objects that are identical if their names are spelled the same way.

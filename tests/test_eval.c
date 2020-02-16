@@ -29,11 +29,11 @@ static void test_eval_self_evaluating(void** state)
 static void test_eval_variable_lookup(void** state)
 {
     (void)state;
-    struct scm_obj* symbols = (void*)scm_nil;
-    struct scm_obj* var1 = intern(&symbols, "var-1");
-    struct scm_obj* val1 = intern(&symbols, "val-1");
-    struct scm_obj* var2 = intern(&symbols, "var-2");
-    struct scm_obj* val2 = intern(&symbols, "val-2");
+    init_symbol_table();
+    struct scm_obj* var1 = intern("var-1");
+    struct scm_obj* val1 = intern("val-1");
+    struct scm_obj* var2 = intern("var-2");
+    struct scm_obj* val2 = intern("val-2");
     struct scm_obj* frame1 = scm_cons(scm_cons(var1, val1), (void*)scm_nil);
     struct scm_obj* frame2 = scm_cons(scm_cons(var2, val2), (void*)scm_nil);
     // Shadowing old var1 value

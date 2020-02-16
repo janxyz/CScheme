@@ -18,9 +18,9 @@ void __wrap_exit_with_error(char const* format, ...)
 static void test_scm_assq_key_found(void** state)
 {
     (void)state;
-    struct scm_obj* symbol_table = (void*)scm_nil;
-    struct scm_obj* key1 = intern(&symbol_table, "key-1");
-    struct scm_obj* key2 = intern(&symbol_table, "key-2");
+    init_symbol_table();
+    struct scm_obj* key1 = intern("key-1");
+    struct scm_obj* key2 = intern("key-2");
     struct scm_obj* pair1 = scm_cons(key1, (void*)scm_true);
     struct scm_obj* pair2 = scm_cons(key2, (void*)scm_false);
     struct scm_obj* alist = (void*)scm_nil;

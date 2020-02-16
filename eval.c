@@ -27,6 +27,13 @@ struct scm_obj* eval(struct scm_obj* exp, struct scm_obj const* const env)
         struct scm_obj* car = scm_car(exp);
         if (car == intern("quote")) {
             return scm_car(scm_cdr(exp));
+        } else if (car == intern("if")) {
+            struct scm_obj* cond = eval(scm_car(scm_cdr(exp)), env);
+            if (cond != scm_false) {
+                return eval(scm_car(scm_cdr(scm_cdr(exp))), env);
+            } else {
+                return eval(scm_car(scm_cdr(scm_cdr(scm_cdr(exp)))), env);
+            }
         }
     }
     exit_with_error("Unknown expression\n");

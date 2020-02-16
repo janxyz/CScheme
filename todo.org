@@ -6,12 +6,12 @@
 ** DONE Empty list object
 *** DONE null?
 ** DONE Error handling
-** Eval [3/6]
+** Eval [4/6]
 *** DONE Self evaluating expressions
 *** DONE Variable lookups
 *** DONE Quoted expressions
 *** TODO Lambda expression
-*** TODO If expression
+*** DONE If expression
 *** TODO Function application
 * Research
 ** Symbols

@@ -4,10 +4,10 @@
 #include <setjmp.h>
 #include <cmocka.h>
 
-#include "utils.h"
-#include "pair.h"
-#include "symbol.h"
-#include "string.h"
+#include "../utils.h"
+#include "../pair.h"
+#include "../symbol.h"
+#include "../string.h"
 
 // Mocks
 void __wrap_exit_with_error(char const* format, ...)

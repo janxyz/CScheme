@@ -6,10 +6,10 @@
 // strcmp
 #include <string.h>
 
-#include "obj.h"
-#include "string.h"
-#include "pair.h"
-#include "symbol.h"
+#include "../obj.h"
+#include "../string.h"
+#include "../pair.h"
+#include "../symbol.h"
 
 // Mocks
 void __wrap_exit_with_error(char const* format, ...)

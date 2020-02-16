@@ -26,8 +26,8 @@ static void test_scm_assq_key_found(void** state)
     struct scm_obj* alist = (void*)scm_nil;
     alist = scm_cons(pair1, alist);
     alist = scm_cons(pair2, alist);
-    assert_true(scm_assq(key1, alist) == pair1);
-    assert_true(scm_assq(key2, alist) == pair2);
+    assert_ptr_equal(scm_assq(key1, alist), pair1);
+    assert_ptr_equal(scm_assq(key2, alist), pair2);
 }
 
 static void test_scm_assq_no_key_found(void** state)
@@ -36,8 +36,8 @@ static void test_scm_assq_no_key_found(void** state)
     struct scm_obj* key = create_string("key-1");
     struct scm_obj* pair = scm_cons(key, key);
     struct scm_obj* alist = scm_cons(pair, (void*)scm_nil);
-    assert_true(scm_assq(pair, alist) == scm_false);
-    assert_true(scm_assq(key, (void*)scm_nil) == scm_false);
+    assert_ptr_equal(scm_assq(pair, alist), scm_false);
+    assert_ptr_equal(scm_assq(key, (void*)scm_nil), scm_false);
 }
 
 static void test_scm_assq_improper_alist(void** state)

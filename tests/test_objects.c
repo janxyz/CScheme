@@ -20,9 +20,9 @@ void __wrap_exit_with_error(char const* format, ...)
 static void test_scm_eq_p(void** state)
 {
     (void)state;
-    assert_true(scm_eq_p(scm_false, scm_false) == scm_true);
-    assert_true(scm_eq_p(scm_true, scm_true) == scm_true);
-    assert_true(scm_eq_p(scm_true, scm_false) == scm_false);
+    assert_ptr_equal(scm_eq_p(scm_false, scm_false), scm_true);
+    assert_ptr_equal(scm_eq_p(scm_true, scm_true), scm_true);
+    assert_ptr_equal(scm_eq_p(scm_true, scm_false), scm_false);
 }
 
 static void test_scm_eq_p_scm_string(void** state)
@@ -30,32 +30,32 @@ static void test_scm_eq_p_scm_string(void** state)
     (void)state;
     struct scm_obj* s1 = create_string("Hello World");
     struct scm_obj* s2 = create_string("Hello World");
-    assert_true(scm_eq_p(s1, s1) == scm_true);
-    assert_true(scm_eq_p(s1, s2) == scm_false);
+    assert_ptr_equal(scm_eq_p(s1, s1), scm_true);
+    assert_ptr_equal(scm_eq_p(s1, s2), scm_false);
 }
 
 static void test_scm_boolean_p(void** state)
 {
     (void)state;
-    assert_true(scm_boolean_p(scm_true) == scm_true);
-    assert_true(scm_boolean_p(scm_false) == scm_true);
+    assert_ptr_equal(scm_boolean_p(scm_true), scm_true);
+    assert_ptr_equal(scm_boolean_p(scm_false), scm_true);
 }
 
 static void test_scm_string(void** state)
 {
     (void)state;
     struct scm_obj* s = create_string("Hello World");
-    assert_true(scm_string_p(s) == scm_true);
-    assert_true(scm_string_p(scm_true) == scm_false);
+    assert_ptr_equal(scm_string_p(s), scm_true);
+    assert_ptr_equal(scm_string_p(scm_true), scm_false);
     assert_true(strcmp("Hello World", c_string((void*)s)) == 0);
 }
 
 static void test_scm_null_p(void** state)
 {
     (void)state;
-    assert_true(scm_null_p(scm_nil) == scm_true);
-    assert_true(scm_null_p(scm_true) == scm_false);
-    assert_true(scm_null_p(scm_false) == scm_false);
+    assert_ptr_equal(scm_null_p(scm_nil), scm_true);
+    assert_ptr_equal(scm_null_p(scm_true), scm_false);
+    assert_ptr_equal(scm_null_p(scm_false), scm_false);
 }
 
 static void test_scm_cons(void** state)
@@ -64,9 +64,9 @@ static void test_scm_cons(void** state)
     struct scm_obj* car = create_string("CAR");
     struct scm_obj* cdr = create_string("CDR");
     struct scm_obj* p = scm_cons(car, cdr);
-    assert_true(scm_pair_p(p) == scm_true);
-    assert_true(scm_car(p) == car);
-    assert_true(scm_cdr(p) == cdr);
+    assert_ptr_equal(scm_pair_p(p), scm_true);
+    assert_ptr_equal(scm_car(p), car);
+    assert_ptr_equal(scm_cdr(p), cdr);
 }
 
 static void test_scm_car_error(void** state)
@@ -91,7 +91,7 @@ static void test_scm_symbol(void** state)
 {
     (void)state;
     struct scm_obj* s = create_symbol("symbol");
-    assert_true(scm_symbol_p(s) == scm_true);
+    assert_ptr_equal(scm_symbol_p(s), scm_true);
 }
 
 static void test_intern_new(void** state)
@@ -100,9 +100,9 @@ static void test_intern_new(void** state)
     init_symbol_table();
     struct scm_obj* sym1 = intern("symbol-1");
     struct scm_obj* sym2 = intern("symbol-2");
-    assert_true(scm_symbol_p(sym1) == scm_true);
-    assert_true(scm_symbol_p(sym2) == scm_true);
-    assert_true(sym1 != sym2);
+    assert_ptr_equal(scm_symbol_p(sym1), scm_true);
+    assert_ptr_equal(scm_symbol_p(sym2), scm_true);
+    assert_ptr_not_equal(sym1, sym2);
 }
 
 static void test_intern_existing(void** state)
@@ -111,8 +111,8 @@ static void test_intern_existing(void** state)
     init_symbol_table();
     struct scm_obj* sym1 = intern("symbol-1");
     struct scm_obj* sym2 = intern("symbol-2");
-    assert_true(intern("symbol-1") == sym1);
-    assert_true(intern("symbol-2") == sym2);
+    assert_ptr_equal(intern("symbol-1"), sym1);
+    assert_ptr_equal(intern("symbol-2"), sym2);
 }
 
 int main(void)

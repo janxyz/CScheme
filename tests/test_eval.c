@@ -8,6 +8,7 @@
 #include "../pair.h"
 #include "../symbol.h"
 #include "../string.h"
+#include "../procedure.h"
 
 // Mocks
 void __wrap_exit_with_error(char const* format, ...)
@@ -79,6 +80,23 @@ static void test_eval_if(void** state)
     assert_ptr_equal(scm_eval(exp, env), true_val);
 }
 
+static void test_eval_lambda(void** state)
+{
+    (void)state;
+    init_symbol_table();
+    struct scm_obj* env = (void*)scm_nil;
+    // (lambda () #t)
+    struct scm_obj* lambda_exp = scm_cons((void*)scm_true, (void*)scm_nil);
+    lambda_exp = scm_cons((void*)scm_nil, lambda_exp);
+    lambda_exp = scm_cons(intern("lambda"), lambda_exp);
+
+    struct scm_obj* proc = scm_eval(lambda_exp, env);
+    assert_ptr_equal(scm_procedure_p(proc), scm_true);
+    assert_ptr_equal(scm_procedure_parameters(proc), scm_nil);
+    assert_ptr_equal(scm_car(scm_procedure_body(proc)), scm_true);
+    assert_ptr_equal(scm_procedure_environment(proc), env);
+}
+
 int main(void)
 {
     const struct CMUnitTest tests[] = {
@@ -86,6 +104,7 @@ int main(void)
         cmocka_unit_test(test_eval_variable_lookup),
         cmocka_unit_test(test_eval_quote),
         cmocka_unit_test(test_eval_if),
+        cmocka_unit_test(test_eval_lambda),
     };
     return cmocka_run_group_tests(tests, NULL, NULL);
 }

@@ -2,6 +2,7 @@
 #include "symbol.h"
 #include "pair.h"
 #include "string.h"
+#include "procedure.h"
 #include "utils.h"
 #include "error.h"
 // NULL
@@ -17,6 +18,12 @@ struct scm_obj* scm_eval(struct scm_obj* exp, struct scm_obj const* const env)
         return quoted_exp(exp);
     } else if (is_if(exp)) {
         return eval_if(exp, env);
+    } else if (is_lambda(exp)) {
+        return scm_make_procedure(
+            lambda_parameters(exp),
+            lambda_body(exp),
+            (void*)env
+        );
     }
     exit_with_error("Unknown expression\n");
     return NULL;
@@ -46,6 +53,11 @@ bool is_if(struct scm_obj const* const exp)
     return scm_pair_p(exp) == scm_true && scm_car(exp) == intern("if");
 }
 
+bool is_lambda(struct scm_obj const* const exp)
+{
+    return scm_pair_p(exp) == scm_true && scm_car(exp) == intern("lambda");
+}
+
 struct scm_obj* quoted_exp(struct scm_obj const* const exp)
 {
     return scm_car(scm_cdr(exp));
@@ -61,6 +73,16 @@ struct scm_obj* eval_if(struct scm_obj const* const exp, struct scm_obj const* c
     } else {
         return scm_eval(alternate, env);
     }
+}
+
+struct scm_obj* lambda_parameters(struct scm_obj const* const exp)
+{
+    return scm_car(scm_cdr(exp));
+}
+
+struct scm_obj* lambda_body(struct scm_obj const* const exp)
+{
+    return scm_cdr(scm_cdr(exp));
 }
 
 /**

@@ -7,47 +7,70 @@
 // NULL
 #include <stddef.h>
 
-struct scm_obj* env_binding(struct scm_obj const* env, struct scm_obj const* const symbol);
-
-struct scm_obj* eval(struct scm_obj* exp, struct scm_obj const* const env)
+struct scm_obj* scm_eval(struct scm_obj* exp, struct scm_obj const* const env)
 {
-    if (scm_boolean_p(exp) == scm_true ||
-        scm_string_p(exp) == scm_true ||
-        scm_null_p(exp) == scm_true) {
+    if (is_self_evaluating(exp)) {
         return exp;
-    } else if (scm_symbol_p(exp) == scm_true) {
-        struct scm_obj* binding = env_binding(exp, env);
-        if (scm_pair_p(binding) == scm_true) {
-            return scm_cdr(binding);
-        } else {
-            exit_with_error("Unbound variable\n");
-        }
-    } else if (scm_pair_p(exp) == scm_true) {
-        struct scm_obj* car = scm_car(exp);
-        if (car == intern("quote")) {
-            return scm_car(scm_cdr(exp));
-        } else if (car == intern("if")) {
-            struct scm_obj* cond = eval(scm_car(scm_cdr(exp)), env);
-            if (cond != scm_false) {
-                return eval(scm_car(scm_cdr(scm_cdr(exp))), env);
-            } else {
-                return eval(scm_car(scm_cdr(scm_cdr(scm_cdr(exp)))), env);
-            }
-        }
+    } else if (is_variable(exp)) {
+        return lookup_variable_value(exp, env);
+    } else if (is_quote(exp)) {
+        return quoted_exp(exp);
+    } else if (is_if(exp)) {
+        return eval_if(exp, env);
     }
     exit_with_error("Unknown expression\n");
     return NULL;
 }
 
+bool is_self_evaluating(struct scm_obj const* const exp)
+{
+    return (
+        scm_boolean_p(exp) == scm_true ||
+        scm_string_p(exp) == scm_true ||
+        scm_null_p(exp) == scm_true
+    );
+}
+
+bool is_variable(struct scm_obj const* const exp)
+{
+    return scm_symbol_p(exp) == scm_true;
+}
+
+bool is_quote(struct scm_obj const* const exp)
+{
+    return scm_pair_p(exp) == scm_true && scm_car(exp) == intern("quote");
+}
+
+bool is_if(struct scm_obj const* const exp)
+{
+    return scm_pair_p(exp) == scm_true && scm_car(exp) == intern("if");
+}
+
+struct scm_obj* quoted_exp(struct scm_obj const* const exp)
+{
+    return scm_car(scm_cdr(exp));
+}
+
+struct scm_obj* eval_if(struct scm_obj const* const exp, struct scm_obj const* const env)
+{
+    struct scm_obj* test = scm_car(scm_cdr(exp));
+    struct scm_obj* consequent = scm_car(scm_cdr(scm_cdr(exp)));
+    struct scm_obj* alternate = scm_car(scm_cdr(scm_cdr(scm_cdr(exp))));
+    if (scm_eval(test, env) != scm_false) {
+        return scm_eval(consequent, env);
+    } else {
+        return scm_eval(alternate, env);
+    }
+}
+
 /**
- * Returns the first binding found in list of frames whos car is symbol.
+ * Returns the first binding found in list of frames whos car is eq? to exp.
  * Otherwise returns scm_false.
  */
-
-struct scm_obj* env_binding(struct scm_obj const* const symbol, struct scm_obj const* env)
+struct scm_obj* lookup_variable_binding(struct scm_obj const* const exp, struct scm_obj const* env)
 {
     while (scm_pair_p(env) == scm_true) {
-        struct scm_obj* result = scm_assq(symbol, scm_car(env));
+        struct scm_obj* result = scm_assq(exp, scm_car(env));
         if (result == scm_false) {
             env = scm_cdr(env);
         } else {
@@ -55,4 +78,15 @@ struct scm_obj* env_binding(struct scm_obj const* const symbol, struct scm_obj c
         }
     }
     return (void*)scm_false;
+}
+
+struct scm_obj* lookup_variable_value(struct scm_obj const* const exp, struct scm_obj const* env)
+{
+    struct scm_obj* binding = lookup_variable_binding(exp, env);
+    if (scm_pair_p(binding) == scm_true) {
+        return scm_cdr(binding);
+    } else {
+        exit_with_error("Unbound variable\n");
+    }
+    return NULL;
 }

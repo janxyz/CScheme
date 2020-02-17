@@ -20,10 +20,10 @@ static void test_eval_self_evaluating(void** state)
     (void)state;
     struct scm_obj const* const env = scm_nil;
     struct scm_obj* s = create_string("string");
-    assert_ptr_equal(eval((void*)scm_true, env), scm_true);
-    assert_ptr_equal(eval((void*)scm_false, env), scm_false);
-    assert_ptr_equal(eval((void*)scm_nil, env), scm_nil);
-    assert_ptr_equal(eval(s, env), s);
+    assert_ptr_equal(scm_eval((void*)scm_true, env), scm_true);
+    assert_ptr_equal(scm_eval((void*)scm_false, env), scm_false);
+    assert_ptr_equal(scm_eval((void*)scm_nil, env), scm_nil);
+    assert_ptr_equal(scm_eval(s, env), s);
 }
 
 static void test_eval_variable_lookup(void** state)
@@ -40,9 +40,9 @@ static void test_eval_variable_lookup(void** state)
     struct scm_obj* frame3 = scm_cons(scm_cons(var1, val2), (void*)scm_nil);
     struct scm_obj* env = scm_cons(frame2, scm_cons(frame1, (void*)scm_nil));
     struct scm_obj* env2 = scm_cons(frame3, env);
-    assert_ptr_equal(eval(var1, env), val1);
-    assert_ptr_equal(eval(var2, env), val2);
-    assert_ptr_equal(eval(var1, env2), val2);
+    assert_ptr_equal(scm_eval(var1, env), val1);
+    assert_ptr_equal(scm_eval(var2, env), val2);
+    assert_ptr_equal(scm_eval(var1, env2), val2);
 }
 
 static void test_eval_quote(void** state)
@@ -51,7 +51,7 @@ static void test_eval_quote(void** state)
     init_symbol_table();
     struct scm_obj const* const env = scm_nil;
     struct scm_obj* exp = scm_cons(intern("quote"), scm_cons(intern("sym"), (void*)scm_nil));
-    assert_ptr_equal(eval(exp, env), intern("sym"));
+    assert_ptr_equal(scm_eval(exp, env), intern("sym"));
 }
 
 static void test_eval_if(void** state)
@@ -70,13 +70,13 @@ static void test_eval_if(void** state)
     struct scm_obj* if_sym = intern("if");
 
     struct scm_obj* exp = scm_cons(if_sym, scm_cons((void*)scm_true, if_cddr));
-    assert_ptr_equal(eval(exp, env), true_val);
+    assert_ptr_equal(scm_eval(exp, env), true_val);
 
     exp = scm_cons(if_sym, scm_cons((void*)scm_false, if_cddr));
-    assert_ptr_equal(eval(exp, env), false_val);
+    assert_ptr_equal(scm_eval(exp, env), false_val);
 
     exp = scm_cons(if_sym, scm_cons((void*)scm_nil, if_cddr));
-    assert_ptr_equal(eval(exp, env), true_val);
+    assert_ptr_equal(scm_eval(exp, env), true_val);
 }
 
 int main(void)

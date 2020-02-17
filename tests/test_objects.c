@@ -10,6 +10,7 @@
 #include "../string.h"
 #include "../pair.h"
 #include "../symbol.h"
+#include "../procedure.h"
 
 // Mocks
 void __wrap_exit_with_error(char const* format, ...)
@@ -115,6 +116,28 @@ static void test_intern_existing(void** state)
     assert_ptr_equal(intern("symbol-2"), sym2);
 }
 
+static void test_procedure(void** state)
+{
+    (void)state;
+    init_symbol_table();
+    struct scm_obj* proc = scm_make_procedure(intern("params"), intern("body"), intern("env"));
+    assert_ptr_equal(scm_procedure_p(proc), scm_true);
+    assert_ptr_equal(scm_procedure_p(scm_false), scm_false);
+    assert_ptr_equal(scm_procedure_parameters(proc), intern("params"));
+    assert_ptr_equal(scm_procedure_body(proc), intern("body"));
+    assert_ptr_equal(scm_procedure_environment(proc), intern("env"));
+}
+
+static void test_procedure_error(void** state)
+{
+    (void)state;
+    init_symbol_table();
+    expect_string_count(__wrap_exit_with_error, format, "Type error: procedure expected\n", 3);
+    scm_procedure_parameters(scm_nil);
+    scm_procedure_body(intern("body"));
+    scm_procedure_environment(scm_true);
+}
+
 int main(void)
 {
     const struct CMUnitTest tests[] = {
@@ -129,6 +152,8 @@ int main(void)
         cmocka_unit_test(test_scm_symbol),
         cmocka_unit_test(test_intern_new),
         cmocka_unit_test(test_intern_existing),
+        cmocka_unit_test(test_procedure),
+        cmocka_unit_test(test_procedure_error),
     };
     return cmocka_run_group_tests(tests, NULL, NULL);
 }

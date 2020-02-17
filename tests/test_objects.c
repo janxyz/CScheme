@@ -1,7 +1,7 @@
+// required for cmocka
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>
-/* #include <stdint.h> */
 #include <cmocka.h>
 // strcmp
 #include <string.h>
@@ -72,7 +72,7 @@ static void test_scm_cons(void** state)
 static void test_scm_car_error(void** state)
 {
     (void)state;
-    expect_any_always(__wrap_exit_with_error, format);
+    expect_string_count(__wrap_exit_with_error, format, "Calling car on non-pair object\n", 3);
     scm_car(scm_nil);
     scm_car(scm_true);
     scm_car(scm_false);
@@ -81,7 +81,7 @@ static void test_scm_car_error(void** state)
 static void test_scm_cdr_error(void** state)
 {
     (void)state;
-    expect_any_always(__wrap_exit_with_error, format);
+    expect_string_count(__wrap_exit_with_error, format, "Calling cdr on non-pair object\n", 3);
     scm_cdr(scm_nil);
     scm_cdr(scm_true);
     scm_cdr(scm_false);

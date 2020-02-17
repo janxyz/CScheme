@@ -13,6 +13,11 @@
 *** TODO Lambda expression
 *** DONE If expression
 *** TODO Function application
+** TODO Ports
+** TODO Read
+*** TODO Lexer
+*** TODO Parser
+** TODO Garbage collection
 * Research
 ** Symbols
 Symbols are objects that are identical if their names are spelled the same way.

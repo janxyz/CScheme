@@ -29,6 +29,25 @@ struct scm_obj* scm_eval(struct scm_obj* exp, struct scm_obj const* const env)
     return NULL;
 }
 
+struct scm_obj* eval_list(struct scm_obj* exp, struct scm_obj const* const env)
+{
+    struct scm_obj* values = (void*)scm_nil;
+    while (exp != scm_nil) {
+        if (scm_pair_p(exp) == scm_true) {
+            values = scm_cons(scm_eval(scm_car(exp), env), values);
+            exp = scm_cdr(exp);
+        } else {
+            exit_with_error("Expected list argument\n");
+        }
+    }
+    struct scm_obj* reversed = (void*)scm_nil;
+    while (values != scm_nil) {
+        reversed = scm_cons(scm_car(values), reversed);
+        values = scm_cdr(values);
+    }
+    return reversed;
+}
+
 bool is_self_evaluating(struct scm_obj const* const exp)
 {
     return (

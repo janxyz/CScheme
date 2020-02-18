@@ -97,6 +97,21 @@ static void test_eval_lambda(void** state)
     assert_ptr_equal(scm_procedure_environment(proc), env);
 }
 
+static void test_eval_list(void** state)
+{
+    (void)state;
+    init_symbol_table();
+    struct scm_obj* env = (void*)scm_nil;
+    struct scm_obj* quote_exp = scm_cons(intern("quote"), scm_cons(intern("foo"), (void*)scm_nil));
+    struct scm_obj* list = (void*)scm_nil;
+    struct scm_obj* str = create_string("str");
+    list = scm_cons(quote_exp, scm_cons(str, list));
+    // ((quote foo) "str") => (foo "str")
+    struct scm_obj* result = eval_list(list, env);
+    assert_ptr_equal(scm_car(result), intern("foo"));
+    assert_ptr_equal(scm_car(scm_cdr(result)), str);
+}
+
 int main(void)
 {
     const struct CMUnitTest tests[] = {
@@ -105,6 +120,7 @@ int main(void)
         cmocka_unit_test(test_eval_quote),
         cmocka_unit_test(test_eval_if),
         cmocka_unit_test(test_eval_lambda),
+        cmocka_unit_test(test_eval_list),
     };
     return cmocka_run_group_tests(tests, NULL, NULL);
 }

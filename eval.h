@@ -7,6 +7,7 @@
 
 struct scm_obj* scm_eval(struct scm_obj* exp, struct scm_obj const* const env);
 
+struct scm_obj* eval_list(struct scm_obj* exp, struct scm_obj const* const env);
 bool is_self_evaluating(struct scm_obj const* const exp);
 bool is_variable(struct scm_obj const* const exp);
 bool is_quote(struct scm_obj const* const exp);

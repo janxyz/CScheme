@@ -10,7 +10,7 @@ static struct scm_obj* symbol_table = NULL;
 
 void init_symbol_table()
 {
-    symbol_table = (void*)scm_nil;
+    symbol_table = scm_nil;
 }
 
 struct scm_symbol {

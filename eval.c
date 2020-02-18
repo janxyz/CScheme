@@ -8,7 +8,7 @@
 // NULL
 #include <stddef.h>
 
-struct scm_obj* scm_eval(struct scm_obj* exp, struct scm_obj const* const env)
+struct scm_obj* scm_eval(struct scm_obj* exp, struct scm_obj* const env)
 {
     if (is_self_evaluating(exp)) {
         return exp;
@@ -22,16 +22,16 @@ struct scm_obj* scm_eval(struct scm_obj* exp, struct scm_obj const* const env)
         return scm_make_procedure(
             lambda_parameters(exp),
             lambda_body(exp),
-            (void*)env
+            env
         );
     }
     exit_with_error("Unknown expression\n");
     return NULL;
 }
 
-struct scm_obj* eval_list(struct scm_obj* exp, struct scm_obj const* const env)
+struct scm_obj* eval_list(struct scm_obj* exp, struct scm_obj* const env)
 {
-    struct scm_obj* values = (void*)scm_nil;
+    struct scm_obj* values = scm_nil;
     while (exp != scm_nil) {
         if (scm_pair_p(exp) == scm_true) {
             values = scm_cons(scm_eval(scm_car(exp), env), values);
@@ -40,7 +40,7 @@ struct scm_obj* eval_list(struct scm_obj* exp, struct scm_obj const* const env)
             exit_with_error("Expected list argument\n");
         }
     }
-    struct scm_obj* reversed = (void*)scm_nil;
+    struct scm_obj* reversed = scm_nil;
     while (values != scm_nil) {
         reversed = scm_cons(scm_car(values), reversed);
         values = scm_cdr(values);
@@ -82,7 +82,7 @@ struct scm_obj* quoted_exp(struct scm_obj const* const exp)
     return scm_car(scm_cdr(exp));
 }
 
-struct scm_obj* eval_if(struct scm_obj const* const exp, struct scm_obj const* const env)
+struct scm_obj* eval_if(struct scm_obj const* const exp, struct scm_obj* const env)
 {
     struct scm_obj* test = scm_car(scm_cdr(exp));
     struct scm_obj* consequent = scm_car(scm_cdr(scm_cdr(exp)));
@@ -118,7 +118,7 @@ struct scm_obj* lookup_variable_binding(struct scm_obj const* const exp, struct 
             return result;
         }
     }
-    return (void*)scm_false;
+    return scm_false;
 }
 
 struct scm_obj* lookup_variable_value(struct scm_obj const* const exp, struct scm_obj const* env)

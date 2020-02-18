@@ -21,13 +21,13 @@ struct scm_obj {
     scm_obj_header;
 };
 
-struct scm_obj const* const scm_nil;
-struct scm_obj const* const scm_false;
-struct scm_obj const* const scm_true;
+struct scm_obj* const scm_nil;
+struct scm_obj* const scm_false;
+struct scm_obj* const scm_true;
 
-struct scm_obj const* scm_eq_p(struct scm_obj const* const x, struct scm_obj const* const y);
-struct scm_obj const* scm_null_p(struct scm_obj const* const x);
-struct scm_obj const* scm_boolean_p(struct scm_obj const* const x);
+struct scm_obj* scm_eq_p(struct scm_obj const* const x, struct scm_obj const* const y);
+struct scm_obj* scm_null_p(struct scm_obj const* const x);
+struct scm_obj* scm_boolean_p(struct scm_obj const* const x);
 
 /* MOPL_OBJ_H */
 #endif

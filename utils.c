@@ -20,5 +20,5 @@ struct scm_obj* scm_assq(struct scm_obj const* const key, struct scm_obj const* 
     if (scm_null_p(alist) != scm_true) {
         exit_with_error("Improper association list\n");
     }
-    return (void*)scm_false;
+    return scm_false;
 }

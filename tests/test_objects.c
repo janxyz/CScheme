@@ -122,6 +122,7 @@ static void test_procedure(void** state)
     init_symbol_table();
     struct scm_obj* proc = scm_make_procedure(intern("params"), intern("body"), intern("env"));
     assert_ptr_equal(scm_procedure_p(proc), scm_true);
+    assert_false(is_primitive(proc));
     assert_ptr_equal(scm_procedure_p(scm_false), scm_false);
     assert_ptr_equal(scm_procedure_parameters(proc), intern("params"));
     assert_ptr_equal(scm_procedure_body(proc), intern("body"));
@@ -136,6 +137,21 @@ static void test_procedure_error(void** state)
     scm_procedure_parameters(scm_nil);
     scm_procedure_body(intern("body"));
     scm_procedure_environment(scm_true);
+}
+
+static struct scm_obj* primitive_fn(struct scm_obj* arguments)
+{
+    return arguments;
+}
+
+static void test_primitive_procedure(void** state)
+{
+    (void)state;
+    struct scm_obj* proc = make_primitve_procedure(&primitive_fn);
+    assert_ptr_equal(scm_procedure_p(proc), scm_true);
+    assert_true(is_primitive(proc));
+    primitive_function fn = primitive_procedure_function(proc);
+    assert_ptr_equal(fn, &primitive_fn);
 }
 
 int main(void)
@@ -154,6 +170,7 @@ int main(void)
         cmocka_unit_test(test_intern_existing),
         cmocka_unit_test(test_procedure),
         cmocka_unit_test(test_procedure_error),
+        cmocka_unit_test(test_primitive_procedure),
     };
     return cmocka_run_group_tests(tests, NULL, NULL);
 }

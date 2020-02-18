@@ -10,7 +10,8 @@ enum {
     TYPE_PORT,
     TYPE_EOF,
     TYPE_NIL,
-    TYPE_PROCEDURE
+    TYPE_PROCEDURE,
+    TYPE_PRIMITIVE_PROCEDURE
 };
 
 #define scm_obj_header \

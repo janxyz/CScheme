@@ -6,13 +6,15 @@
 ** DONE Empty list object
 *** DONE null?
 ** DONE Error handling
-** Eval [4/6]
+** Eval [5/6]
 *** DONE Self evaluating expressions
 *** DONE Variable lookups
 *** DONE Quoted expressions
-*** TODO Lambda expression
+*** DONE Lambda expression
 *** DONE If expression
 *** TODO Function application
+** DONE Compound procedures
+** DONE Primitive procedures
 ** TODO Ports
 ** TODO Read
 *** TODO Lexer

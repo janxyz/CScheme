@@ -15,9 +15,17 @@
 *** DONE Function application
 ** DONE Compound procedures
 ** DONE Primitive procedures
+** TODO Number objects
+** TODO Character objects
 ** TODO Ports
+*** DONE Basic functions for lexer
+*** TODO Output ports
+*** TODO Scheme interface for reading and writing with ports
 ** TODO Read
 *** TODO Lexer
+**** DONE Basic lexing
+**** TODO Lexing numbers
+**** TODO Error reporting with line and column number
 *** TODO Parser
 ** TODO Garbage collection
 * Research

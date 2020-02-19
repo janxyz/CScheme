@@ -7,3 +7,4 @@ test_objects
 test_eval
 test_utils
 test_lexer
+test_parser

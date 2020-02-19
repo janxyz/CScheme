@@ -24,6 +24,10 @@ struct scm_obj* scm_eval(struct scm_obj* exp, struct scm_obj* const env)
             lambda_body(exp),
             env
         );
+    } else if (is_application(exp)) {
+        struct scm_obj* op = scm_eval(application_operator(exp), env);
+        struct scm_obj* args = eval_list(application_operands(exp), env);
+        return apply(op, args);
     }
     exit_with_error("Unknown expression\n");
     return NULL;
@@ -130,4 +134,34 @@ struct scm_obj* lookup_variable_value(struct scm_obj const* const exp, struct sc
         exit_with_error("Unbound variable\n");
     }
     return NULL;
+}
+
+bool is_application(struct scm_obj const* const exp)
+{
+    return scm_pair_p(exp) == scm_true;
+}
+
+struct scm_obj* apply(struct scm_obj* procedure, struct scm_obj* arguments)
+{
+    // Eval does not check if this actually a procedure
+    if (scm_procedure_p(procedure) != scm_true) {
+        exit_with_error("Non-procedure expression in application form\n");
+    }
+    if (is_primitive(procedure)) {
+        primitive_function fn = primitive_procedure_function(procedure);
+        return fn(arguments);
+    } else {
+        // TODO: Implement apply for compound procedures
+        return scm_nil;
+    }
+}
+
+struct scm_obj* application_operator(struct scm_obj const* const exp)
+{
+    return scm_car(exp);
+}
+
+struct scm_obj* application_operands(struct scm_obj const* const exp)
+{
+    return scm_cdr(exp);
 }

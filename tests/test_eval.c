@@ -112,6 +112,23 @@ static void test_eval_list(void** state)
     assert_ptr_equal(scm_car(scm_cdr(result)), str);
 }
 
+struct scm_obj* primitive_fn(struct scm_obj* args)
+{
+    return scm_car(args);
+}
+
+static void test_eval_primitive_procedure(void** state)
+{
+    (void)state;
+    init_symbol_table();
+    struct scm_obj* proc = make_primitve_procedure(&primitive_fn);
+    struct scm_obj* frame = scm_cons(scm_cons(intern("fn"), proc), scm_nil);
+    struct scm_obj* env = scm_cons(frame, scm_nil);
+    struct scm_obj* arg = scm_true;
+    struct scm_obj* result = scm_eval(scm_cons(intern("fn"), scm_cons(arg, scm_nil)), env);
+    assert_ptr_equal(result, arg);
+}
+
 int main(void)
 {
     const struct CMUnitTest tests[] = {
@@ -121,6 +138,7 @@ int main(void)
         cmocka_unit_test(test_eval_if),
         cmocka_unit_test(test_eval_lambda),
         cmocka_unit_test(test_eval_list),
+        cmocka_unit_test(test_eval_primitive_procedure),
     };
     return cmocka_run_group_tests(tests, NULL, NULL);
 }

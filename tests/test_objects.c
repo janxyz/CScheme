@@ -5,12 +5,15 @@
 #include <cmocka.h>
 // strcmp
 #include <string.h>
+// EOF
+#include <stdio.h>
 
 #include "../obj.h"
 #include "../string.h"
 #include "../pair.h"
 #include "../symbol.h"
 #include "../procedure.h"
+#include "../port.h"
 
 // Mocks
 void __wrap_exit_with_error(char const* format, ...)
@@ -140,6 +143,78 @@ static void test_primitive_procedure()
     assert_ptr_equal(fn, &primitive_fn);
 }
 
+static void test_init_ports()
+{
+    init_ports();
+    struct scm_obj* in_port = scm_current_input_port();
+    struct scm_obj* out_port = scm_current_output_port();
+    assert_ptr_equal(scm_port_p(in_port), scm_true);
+    assert_ptr_equal(scm_port_p(out_port), scm_true);
+    assert_ptr_equal(scm_input_port_p(in_port), scm_true);
+    assert_ptr_equal(scm_output_port_p(out_port), scm_true);
+}
+
+static void test_input_file_port()
+{
+    init_ports();
+    struct scm_obj* p = scm_open_input_file(create_string("tests/text.txt"));
+    assert_ptr_equal(scm_input_port_p(p), scm_true);
+    assert_int_equal(peek_char((void*)p), 'H');
+    assert_int_equal(read_char((void*)p), 'H');
+    assert_int_equal(read_char((void*)p), 'e');
+    assert_int_equal(read_char((void*)p), 'l');
+    assert_int_equal(read_char((void*)p), 'l');
+    assert_int_equal(read_char((void*)p), 'o');
+    assert_int_equal(read_char((void*)p), '\n');
+    assert_int_equal(read_char((void*)p), EOF);
+    assert_int_equal(peek_char((void*)p), EOF);
+}
+
+static void test_close_input_file_port()
+{
+    init_ports();
+    expect_string(__wrap_exit_with_error, format, "Operation on closed port\n");
+    struct scm_obj* p = scm_open_input_file(create_string("tests/text.txt"));
+    assert_ptr_equal(scm_port_closed_p(p), scm_false);
+    scm_close_port(p);
+    assert_ptr_equal(scm_port_closed_p(p), scm_true);
+    // Closing multiple times should be possible
+    scm_close_port(p);
+    read_char((void*)p);
+}
+
+static void test_open_input_string_port()
+{
+    init_ports();
+    struct scm_obj* p = scm_open_input_string(create_string("Hi!"));
+    assert_ptr_equal(scm_port_p(p), scm_true);
+    assert_ptr_equal(scm_input_port_p(p), scm_true);
+    assert_ptr_equal(scm_port_closed_p(p), scm_false);
+}
+
+static void test_close_input_string_port()
+{
+    init_ports();
+    struct scm_obj* p = scm_open_input_string(create_string("Hi!"));
+    struct scm_obj* result = scm_close_port(p);
+    assert_ptr_equal(result, p);
+    assert_ptr_equal(scm_port_p(p), scm_true);
+    assert_ptr_equal(scm_input_port_p(p), scm_true);
+    assert_ptr_equal(scm_port_closed_p(p), scm_true);
+}
+
+static void test_read_string_port()
+{
+    init_ports();
+    struct scm_obj* p = scm_open_input_string(create_string("Hi!"));
+    assert_int_equal(peek_char((void*)p), 'H');
+    assert_int_equal(read_char((void*)p), 'H');
+    assert_int_equal(read_char((void*)p), 'i');
+    assert_int_equal(read_char((void*)p), '!');
+    assert_int_equal(read_char((void*)p), EOF);
+    assert_int_equal(peek_char((void*)p), EOF);
+}
+
 int main(void)
 {
     const struct CMUnitTest tests[] = {
@@ -157,6 +232,12 @@ int main(void)
         cmocka_unit_test(test_procedure),
         cmocka_unit_test(test_procedure_error),
         cmocka_unit_test(test_primitive_procedure),
+        cmocka_unit_test(test_init_ports),
+        cmocka_unit_test(test_input_file_port),
+        cmocka_unit_test(test_close_input_file_port),
+        cmocka_unit_test(test_open_input_string_port),
+        cmocka_unit_test(test_close_input_string_port),
+        cmocka_unit_test(test_read_string_port),
     };
     return cmocka_run_group_tests(tests, NULL, NULL);
 }

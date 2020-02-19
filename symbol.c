@@ -8,7 +8,7 @@
 
 static struct scm_obj* symbol_table = NULL;
 
-void init_symbol_table()
+void init_symbol_table(void)
 {
     symbol_table = scm_nil;
 }

@@ -8,6 +8,7 @@
 struct scm_obj* scm_eval(struct scm_obj* exp, struct scm_obj* const env);
 
 struct scm_obj* eval_list(struct scm_obj* exp, struct scm_obj* const env);
+struct scm_obj* eval_sequence(struct scm_obj* exp, struct scm_obj* const env);
 bool is_self_evaluating(struct scm_obj const* const exp);
 bool is_variable(struct scm_obj const* const exp);
 bool is_quote(struct scm_obj const* const exp);
@@ -19,6 +20,8 @@ struct scm_obj* lambda_parameters(struct scm_obj const* const exp);
 struct scm_obj* lambda_body(struct scm_obj const* const exp);
 struct scm_obj* lookup_variable_binding(struct scm_obj const* const exp, struct scm_obj const* env);
 struct scm_obj* lookup_variable_value(struct scm_obj const* const exp, struct scm_obj const* env);
+
+struct scm_obj* make_frame(struct scm_obj* variables, struct scm_obj* values);
 
 bool is_application(struct scm_obj const* const exp);
 struct scm_obj* apply(struct scm_obj* procedure, struct scm_obj* arguments);

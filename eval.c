@@ -52,6 +52,22 @@ struct scm_obj* eval_list(struct scm_obj* exp, struct scm_obj* const env)
     return reversed;
 }
 
+/**
+ * Evaluate expressions in order and return value of last expression.
+ */
+struct scm_obj* eval_sequence(struct scm_obj* exp, struct scm_obj* const env)
+{
+    struct scm_obj* val = NULL;
+    while (scm_pair_p(exp) == scm_true) {
+        val = scm_eval(scm_car(exp), env);
+        exp = scm_cdr(exp);
+    }
+    if (val == NULL) {
+        exit_with_error("Empty expression list\n");
+    }
+    return val;
+}
+
 bool is_self_evaluating(struct scm_obj const* const exp)
 {
     return (
@@ -136,6 +152,21 @@ struct scm_obj* lookup_variable_value(struct scm_obj const* const exp, struct sc
     return NULL;
 }
 
+struct scm_obj* make_frame(struct scm_obj* variables, struct scm_obj* values)
+{
+    struct scm_obj* frame = scm_nil;
+    while (scm_pair_p(variables) == scm_true && scm_pair_p(values) == scm_true) {
+        struct scm_obj* binding = scm_cons(scm_car(variables), scm_car(values));
+        frame = scm_cons(binding, frame);
+        variables = scm_cdr(variables);
+        values = scm_cdr(values);
+    }
+    if (variables != scm_nil || values != scm_nil) {
+        exit_with_error("Uneven number of variables and values\n");
+    }
+    return frame;
+}
+
 bool is_application(struct scm_obj const* const exp)
 {
     return scm_pair_p(exp) == scm_true;
@@ -151,8 +182,11 @@ struct scm_obj* apply(struct scm_obj* procedure, struct scm_obj* arguments)
         primitive_function fn = primitive_procedure_function(procedure);
         return fn(arguments);
     } else {
-        // TODO: Implement apply for compound procedures
-        return scm_nil;
+        struct scm_obj* parameters = scm_procedure_parameters(procedure);
+        struct scm_obj* body = scm_procedure_body(procedure);
+        struct scm_obj* env = scm_procedure_environment(procedure);
+        env = scm_cons(make_frame(parameters, arguments), env);
+        return eval_sequence(body, env);
     }
 }
 

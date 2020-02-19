@@ -129,6 +129,36 @@ static void test_eval_primitive_procedure(void** state)
     assert_ptr_equal(result, arg);
 }
 
+static void test_eval_sequence(void** state)
+{
+    (void)state;
+    init_symbol_table();
+    struct scm_obj* env = scm_nil;
+    struct scm_obj* quote_exp = scm_cons(intern("quote"), scm_cons(intern("foo"), scm_nil));
+    struct scm_obj* list = scm_nil;
+    struct scm_obj* str = create_string("str");
+    list = scm_cons(str, scm_cons(quote_exp, list));
+    // ("str" (quote foo)) => foo
+    struct scm_obj* result = eval_sequence(list, env);
+    assert_ptr_equal(result, intern("foo"));
+}
+
+static void test_eval_compound_procedure(void** state)
+{
+    (void)state;
+    init_symbol_table();
+    // test the identity function
+    struct scm_obj* parameters = scm_cons(intern("x"), scm_nil);
+    struct scm_obj* body = scm_cons(intern("x"), scm_nil);
+    struct scm_obj* proc = scm_make_procedure(parameters, body, scm_nil);
+    struct scm_obj* frame = scm_cons(scm_cons(intern("id"), proc), scm_nil);
+    struct scm_obj* env = scm_cons(frame, scm_nil);
+    struct scm_obj* arg = create_string("str");
+    struct scm_obj* application = scm_cons(intern("id"), scm_cons(arg, scm_nil));
+    struct scm_obj* result = scm_eval(application, env);
+    assert_ptr_equal(result, arg);
+}
+
 int main(void)
 {
     const struct CMUnitTest tests[] = {
@@ -139,6 +169,8 @@ int main(void)
         cmocka_unit_test(test_eval_lambda),
         cmocka_unit_test(test_eval_list),
         cmocka_unit_test(test_eval_primitive_procedure),
+        cmocka_unit_test(test_eval_sequence),
+        cmocka_unit_test(test_eval_compound_procedure),
     };
     return cmocka_run_group_tests(tests, NULL, NULL);
 }

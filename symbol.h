@@ -10,6 +10,7 @@ struct scm_obj* create_symbol(char* str);
 
 void init_symbol_table(void);
 struct scm_obj* intern(char* str);
+char* symbol_c_string(struct scm_symbol* symbol);
 
 /* #define MOPL_SYMBOL_H */
 #endif

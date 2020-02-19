@@ -49,3 +49,8 @@ struct scm_obj* intern(char* str)
     symbol_table = scm_cons(sym, symbol_table);
     return sym;
 }
+
+char* symbol_c_string(struct scm_symbol* symbol)
+{
+    return symbol->str;
+}

@@ -15,9 +15,8 @@ void __wrap_exit_with_error(char const* format, ...)
     check_expected(format);
 }
 
-static void test_scm_assq_key_found(void** state)
+static void test_scm_assq_key_found()
 {
-    (void)state;
     init_symbol_table();
     struct scm_obj* key1 = intern("key-1");
     struct scm_obj* key2 = intern("key-2");
@@ -30,9 +29,8 @@ static void test_scm_assq_key_found(void** state)
     assert_ptr_equal(scm_assq(key2, alist), pair2);
 }
 
-static void test_scm_assq_no_key_found(void** state)
+static void test_scm_assq_no_key_found()
 {
-    (void)state;
     struct scm_obj* key = create_string("key-1");
     struct scm_obj* pair = scm_cons(key, key);
     struct scm_obj* alist = scm_cons(pair, scm_nil);
@@ -40,9 +38,8 @@ static void test_scm_assq_no_key_found(void** state)
     assert_ptr_equal(scm_assq(key, scm_nil), scm_false);
 }
 
-static void test_scm_assq_improper_alist(void** state)
+static void test_scm_assq_improper_alist()
 {
-    (void)state;
     expect_string(__wrap_exit_with_error, format, "Improper association list\n");
     scm_assq(scm_true, scm_true);
 }

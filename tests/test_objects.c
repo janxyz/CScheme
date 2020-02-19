@@ -18,50 +18,44 @@ void __wrap_exit_with_error(char const* format, ...)
     check_expected(format);
 }
 
-static void test_scm_eq_p(void** state)
+static void test_scm_eq_p()
 {
-    (void)state;
     assert_ptr_equal(scm_eq_p(scm_false, scm_false), scm_true);
     assert_ptr_equal(scm_eq_p(scm_true, scm_true), scm_true);
     assert_ptr_equal(scm_eq_p(scm_true, scm_false), scm_false);
 }
 
-static void test_scm_eq_p_scm_string(void** state)
+static void test_scm_eq_p_scm_string()
 {
-    (void)state;
     struct scm_obj* s1 = create_string("Hello World");
     struct scm_obj* s2 = create_string("Hello World");
     assert_ptr_equal(scm_eq_p(s1, s1), scm_true);
     assert_ptr_equal(scm_eq_p(s1, s2), scm_false);
 }
 
-static void test_scm_boolean_p(void** state)
+static void test_scm_boolean_p()
 {
-    (void)state;
     assert_ptr_equal(scm_boolean_p(scm_true), scm_true);
     assert_ptr_equal(scm_boolean_p(scm_false), scm_true);
 }
 
-static void test_scm_string(void** state)
+static void test_scm_string()
 {
-    (void)state;
     struct scm_obj* s = create_string("Hello World");
     assert_ptr_equal(scm_string_p(s), scm_true);
     assert_ptr_equal(scm_string_p(scm_true), scm_false);
     assert_true(strcmp("Hello World", c_string((void*)s)) == 0);
 }
 
-static void test_scm_null_p(void** state)
+static void test_scm_null_p()
 {
-    (void)state;
     assert_ptr_equal(scm_null_p(scm_nil), scm_true);
     assert_ptr_equal(scm_null_p(scm_true), scm_false);
     assert_ptr_equal(scm_null_p(scm_false), scm_false);
 }
 
-static void test_scm_cons(void** state)
+static void test_scm_cons()
 {
-    (void)state;
     struct scm_obj* car = create_string("CAR");
     struct scm_obj* cdr = create_string("CDR");
     struct scm_obj* p = scm_cons(car, cdr);
@@ -70,34 +64,30 @@ static void test_scm_cons(void** state)
     assert_ptr_equal(scm_cdr(p), cdr);
 }
 
-static void test_scm_car_error(void** state)
+static void test_scm_car_error()
 {
-    (void)state;
     expect_string_count(__wrap_exit_with_error, format, "Calling car on non-pair object\n", 3);
     scm_car(scm_nil);
     scm_car(scm_true);
     scm_car(scm_false);
 }
 
-static void test_scm_cdr_error(void** state)
+static void test_scm_cdr_error()
 {
-    (void)state;
     expect_string_count(__wrap_exit_with_error, format, "Calling cdr on non-pair object\n", 3);
     scm_cdr(scm_nil);
     scm_cdr(scm_true);
     scm_cdr(scm_false);
 }
 
-static void test_scm_symbol(void** state)
+static void test_scm_symbol()
 {
-    (void)state;
     struct scm_obj* s = create_symbol("symbol");
     assert_ptr_equal(scm_symbol_p(s), scm_true);
 }
 
-static void test_intern_new(void** state)
+static void test_intern_new()
 {
-    (void)state;
     init_symbol_table();
     struct scm_obj* sym1 = intern("symbol-1");
     struct scm_obj* sym2 = intern("symbol-2");
@@ -106,9 +96,8 @@ static void test_intern_new(void** state)
     assert_ptr_not_equal(sym1, sym2);
 }
 
-static void test_intern_existing(void** state)
+static void test_intern_existing()
 {
-    (void)state;
     init_symbol_table();
     struct scm_obj* sym1 = intern("symbol-1");
     struct scm_obj* sym2 = intern("symbol-2");
@@ -116,9 +105,8 @@ static void test_intern_existing(void** state)
     assert_ptr_equal(intern("symbol-2"), sym2);
 }
 
-static void test_procedure(void** state)
+static void test_procedure()
 {
-    (void)state;
     init_symbol_table();
     struct scm_obj* proc = scm_make_procedure(intern("params"), intern("body"), intern("env"));
     assert_ptr_equal(scm_procedure_p(proc), scm_true);
@@ -129,9 +117,8 @@ static void test_procedure(void** state)
     assert_ptr_equal(scm_procedure_environment(proc), intern("env"));
 }
 
-static void test_procedure_error(void** state)
+static void test_procedure_error()
 {
-    (void)state;
     init_symbol_table();
     expect_string_count(__wrap_exit_with_error, format, "Type error: procedure expected\n", 3);
     scm_procedure_parameters(scm_nil);
@@ -144,9 +131,8 @@ static struct scm_obj* primitive_fn(struct scm_obj* arguments)
     return arguments;
 }
 
-static void test_primitive_procedure(void** state)
+static void test_primitive_procedure()
 {
-    (void)state;
     struct scm_obj* proc = make_primitve_procedure(&primitive_fn);
     assert_ptr_equal(scm_procedure_p(proc), scm_true);
     assert_true(is_primitive(proc));

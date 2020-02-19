@@ -16,9 +16,8 @@ void __wrap_exit_with_error(char const* format, ...)
     check_expected(format);
 }
 
-static void test_eval_self_evaluating(void** state)
+static void test_eval_self_evaluating()
 {
-    (void)state;
     struct scm_obj* const env = scm_nil;
     struct scm_obj* s = create_string("string");
     assert_ptr_equal(scm_eval(scm_true, env), scm_true);
@@ -27,9 +26,8 @@ static void test_eval_self_evaluating(void** state)
     assert_ptr_equal(scm_eval(s, env), s);
 }
 
-static void test_eval_variable_lookup(void** state)
+static void test_eval_variable_lookup()
 {
-    (void)state;
     init_symbol_table();
     struct scm_obj* var1 = intern("var-1");
     struct scm_obj* val1 = intern("val-1");
@@ -46,18 +44,16 @@ static void test_eval_variable_lookup(void** state)
     assert_ptr_equal(scm_eval(var1, env2), val2);
 }
 
-static void test_eval_quote(void** state)
+static void test_eval_quote()
 {
-    (void)state;
     init_symbol_table();
     struct scm_obj* const env = scm_nil;
     struct scm_obj* exp = scm_cons(intern("quote"), scm_cons(intern("sym"), scm_nil));
     assert_ptr_equal(scm_eval(exp, env), intern("sym"));
 }
 
-static void test_eval_if(void** state)
+static void test_eval_if()
 {
-    (void)state;
     init_symbol_table();
     struct scm_obj* env = scm_nil;
     struct scm_obj* true_var = intern("true");
@@ -80,9 +76,8 @@ static void test_eval_if(void** state)
     assert_ptr_equal(scm_eval(exp, env), true_val);
 }
 
-static void test_eval_lambda(void** state)
+static void test_eval_lambda()
 {
-    (void)state;
     init_symbol_table();
     struct scm_obj* env = scm_nil;
     // (lambda () #t)
@@ -97,9 +92,8 @@ static void test_eval_lambda(void** state)
     assert_ptr_equal(scm_procedure_environment(proc), env);
 }
 
-static void test_eval_list(void** state)
+static void test_eval_list()
 {
-    (void)state;
     init_symbol_table();
     struct scm_obj* env = scm_nil;
     struct scm_obj* quote_exp = scm_cons(intern("quote"), scm_cons(intern("foo"), scm_nil));
@@ -117,9 +111,8 @@ struct scm_obj* primitive_fn(struct scm_obj* args)
     return scm_car(args);
 }
 
-static void test_eval_primitive_procedure(void** state)
+static void test_eval_primitive_procedure()
 {
-    (void)state;
     init_symbol_table();
     struct scm_obj* proc = make_primitve_procedure(&primitive_fn);
     struct scm_obj* frame = scm_cons(scm_cons(intern("fn"), proc), scm_nil);
@@ -129,9 +122,8 @@ static void test_eval_primitive_procedure(void** state)
     assert_ptr_equal(result, arg);
 }
 
-static void test_eval_sequence(void** state)
+static void test_eval_sequence()
 {
-    (void)state;
     init_symbol_table();
     struct scm_obj* env = scm_nil;
     struct scm_obj* quote_exp = scm_cons(intern("quote"), scm_cons(intern("foo"), scm_nil));
@@ -143,9 +135,8 @@ static void test_eval_sequence(void** state)
     assert_ptr_equal(result, intern("foo"));
 }
 
-static void test_eval_compound_procedure(void** state)
+static void test_eval_compound_procedure()
 {
-    (void)state;
     init_symbol_table();
     // test the identity function
     struct scm_obj* parameters = scm_cons(intern("x"), scm_nil);

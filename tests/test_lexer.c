@@ -80,6 +80,20 @@ static void test_lex_identifier()
     assert_null(next_token(lexer));
 }
 
+static void test_lex_number_sign_boolean()
+{
+    init_ports();
+    struct scm_obj* string = create_string("#t#f");
+    struct scm_obj* port = scm_open_input_string(string);
+    struct lexer* lexer = create_lexer((void*)port);
+    struct token* token = next_token(lexer);
+    assert_int_equal(token->type, TOK_BOOLEAN);
+    assert_string_equal(token->str, "#t");
+    token = next_token(lexer);
+    assert_int_equal(token->type, TOK_BOOLEAN);
+    assert_string_equal(token->str, "#f");
+}
+
 int main(void)
 {
     const struct CMUnitTest tests[] = {
@@ -87,6 +101,7 @@ int main(void)
         cmocka_unit_test(test_lex_parentheses),
         cmocka_unit_test(test_lex_whitespace),
         cmocka_unit_test(test_lex_identifier),
+        cmocka_unit_test(test_lex_number_sign_boolean),
     };
     return cmocka_run_group_tests(tests, NULL, NULL);
 }

@@ -13,6 +13,7 @@ static int lexer_peek(struct lexer* l);
 static struct token* lex_token(struct lexer* l);
 static struct token* lex_whitespace(struct lexer* l);
 static struct token* lex_identifier(struct lexer* l);
+static struct token* lex_number_sign(struct lexer* l);
 static struct token* accept_token(struct lexer* l, enum token_type type);
 static bool is_delimiter(int c);
 static bool is_identifier_initial(int c);
@@ -90,6 +91,8 @@ static struct token* lex_token(struct lexer* const l)
         return accept_token(l, TOK_LPAREN);
     } else if (c == ')') {
         return accept_token(l, TOK_RPAREN);
+    } else if (c == '#') {
+        return lex_number_sign(l);
     } else if (is_identifier_initial(c)) {
         return lex_identifier(l);
     } else if (c == EOF) {
@@ -117,6 +120,16 @@ static struct token* lex_identifier(struct lexer* const l)
         return accept_token(l, TOK_IDENTIFIER);
     }
     exit_with_error("Identifier not followed by delimiter\n");
+    return NULL;
+}
+
+static struct token* lex_number_sign(struct lexer* l)
+{
+    int c = lexer_getc(l);
+    if (c == 't' || c == 'f') {
+        return accept_token(l, TOK_BOOLEAN);
+    }
+    exit_with_error("Unknown token\n");
     return NULL;
 }
 

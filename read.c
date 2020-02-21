@@ -30,6 +30,14 @@ bool parse_expr(struct lexer* const lexer, struct scm_obj** const obj)
     struct token* t = next_token(lexer);
     if (t->type == TOK_LPAREN) {
         return parse_list(lexer, obj);
+    } else if (t->type == TOK_BOOLEAN) {
+        if (strcmp(t->str, "#t") == 0) {
+            *obj = scm_true;
+            return true;
+        } else if (strcmp(t->str, "#f") == 0) {
+            *obj = scm_false;
+            return true;
+        }
     } else if (t->type == TOK_IDENTIFIER) {
         *obj = intern(t->str);
         return true;

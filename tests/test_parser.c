@@ -49,12 +49,25 @@ static void test_read_symbol_list()
     assert_ptr_equal(scm_car(scm_cdr(scm_cdr(exp))), intern("c"));
 }
 
+static void test_read_boolean()
+{
+    init_symbol_table();
+    init_ports();
+    struct scm_obj* string = create_string("#t#f");
+    struct scm_obj* port = scm_open_input_string(string);
+    struct scm_obj* exp = scm_read(port);
+    assert_ptr_equal(exp, scm_true);
+    exp = scm_read(port);
+    assert_ptr_equal(exp, scm_false);
+}
+
 int main(void)
 {
     const struct CMUnitTest tests[] = {
         cmocka_unit_test(test_read_symbol),
         cmocka_unit_test(test_read_empty_list),
         cmocka_unit_test(test_read_symbol_list),
+        cmocka_unit_test(test_read_boolean),
     };
     return cmocka_run_group_tests(tests, NULL, NULL);
 }

@@ -37,6 +37,17 @@ static void test_read_empty_list()
     assert_ptr_equal(exp, scm_nil);
 }
 
+static void test_read_quoted_empty_list()
+{
+    init_symbol_table();
+    init_ports();
+    struct scm_obj* string = create_string("(quote ())");
+    struct scm_obj* port = scm_open_input_string(string);
+    struct scm_obj* exp = scm_read(port);
+    assert_ptr_equal(scm_car(exp), intern("quote"));
+    assert_ptr_equal(scm_car(scm_cdr(exp)), scm_nil);
+}
+
 static void test_read_symbol_list()
 {
     init_symbol_table();
@@ -66,6 +77,7 @@ int main(void)
     const struct CMUnitTest tests[] = {
         cmocka_unit_test(test_read_symbol),
         cmocka_unit_test(test_read_empty_list),
+        cmocka_unit_test(test_read_quoted_empty_list),
         cmocka_unit_test(test_read_symbol_list),
         cmocka_unit_test(test_read_boolean),
     };

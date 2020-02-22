@@ -52,6 +52,16 @@ static void test_eval_quote()
     assert_ptr_equal(scm_eval(exp, env), intern("sym"));
 }
 
+static void test_eval_quoted_empty_list()
+{
+    init_symbol_table();
+    struct scm_obj* env = scm_nil;
+    struct scm_obj* exp = scm_cons(scm_nil, scm_nil);
+    exp = scm_cons(intern("quote"), exp);
+    struct scm_obj* result = scm_eval(exp, env);
+    assert_ptr_equal(result, scm_nil);
+}
+
 static void test_eval_if()
 {
     init_symbol_table();
@@ -156,6 +166,7 @@ int main(void)
         cmocka_unit_test(test_eval_self_evaluating),
         cmocka_unit_test(test_eval_variable_lookup),
         cmocka_unit_test(test_eval_quote),
+        cmocka_unit_test(test_eval_quoted_empty_list),
         cmocka_unit_test(test_eval_if),
         cmocka_unit_test(test_eval_lambda),
         cmocka_unit_test(test_eval_list),

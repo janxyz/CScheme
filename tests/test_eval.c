@@ -22,7 +22,6 @@ static void test_eval_self_evaluating()
     struct scm_obj* s = create_string("string");
     assert_ptr_equal(scm_eval(scm_true, env), scm_true);
     assert_ptr_equal(scm_eval(scm_false, env), scm_false);
-    assert_ptr_equal(scm_eval(scm_nil, env), scm_nil);
     assert_ptr_equal(scm_eval(s, env), s);
 }
 
@@ -81,9 +80,6 @@ static void test_eval_if()
 
     exp = scm_cons(if_sym, scm_cons(scm_false, if_cddr));
     assert_ptr_equal(scm_eval(exp, env), false_val);
-
-    exp = scm_cons(if_sym, scm_cons(scm_nil, if_cddr));
-    assert_ptr_equal(scm_eval(exp, env), true_val);
 }
 
 static void test_eval_lambda()

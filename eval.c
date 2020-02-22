@@ -72,8 +72,7 @@ bool is_self_evaluating(struct scm_obj const* const exp)
 {
     return (
         scm_boolean_p(exp) == scm_true ||
-        scm_string_p(exp) == scm_true ||
-        scm_null_p(exp) == scm_true
+        scm_string_p(exp) == scm_true
     );
 }
 

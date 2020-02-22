@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <stdbool.h>
+#include <readline/readline.h>
+#include <readline/history.h>
 #include "obj.h"
 #include "pair.h"
 #include "symbol.h"
+#include "string.h"
 #include "port.h"
 #include "read.h"
 #include "eval.h"
@@ -16,6 +19,8 @@ void print_helper(struct scm_obj* obj, bool is_cdr)
         printf("%s", symbol_c_string((void*)obj));
     } else if (obj->type == TYPE_BOOLEAN) {
         printf("%s", obj == scm_true ? "#t" : "#f");
+    } else if (obj->type == TYPE_NIL && !is_cdr) {
+        printf("()");
     } else if (obj->type == TYPE_PROCEDURE || obj->type == TYPE_PRIMITIVE_PROCEDURE) {
         printf("#<procedure>");
     } else if (obj->type == TYPE_PAIR) {
@@ -49,6 +54,36 @@ struct scm_obj* prim_scm_eq_p(struct scm_obj* const args)
     return scm_eq_p(scm_car(args), scm_car(scm_cdr(args)));
 }
 
+struct scm_obj* prim_scm_cons(struct scm_obj* const args)
+{
+    return scm_cons(scm_car(args), scm_car(scm_cdr(args)));
+}
+
+struct scm_obj* prim_scm_car(struct scm_obj* const args)
+{
+    return scm_car(scm_car(args));
+}
+
+struct scm_obj* prim_scm_cdr(struct scm_obj* const args)
+{
+    return scm_cdr(scm_car(args));
+}
+
+struct scm_obj* prim_scm_eval(struct scm_obj* const args)
+{
+    struct scm_obj* exp = scm_car(args);
+    struct scm_obj* env = scm_car(scm_cdr(args));
+    return scm_eval(exp, env);
+}
+
+struct scm_obj* env = NULL;
+
+struct scm_obj* prim_scm_interaction_environment(struct scm_obj* const args)
+{
+    (void)args;
+    return env;
+}
+
 int main(void)
 {
     printf("mopl 1.0\n");
@@ -58,14 +93,28 @@ int main(void)
     // Setup environment
     struct scm_obj* frame = scm_nil;
     frame = scm_cons(scm_cons(intern("eq?"), make_primitve_procedure(&prim_scm_eq_p)), frame);
-    struct scm_obj* env = scm_cons(frame, scm_nil);
+    frame = scm_cons(scm_cons(intern("cons"), make_primitve_procedure(&prim_scm_cons)), frame);
+    frame = scm_cons(scm_cons(intern("car"), make_primitve_procedure(&prim_scm_car)), frame);
+    frame = scm_cons(scm_cons(intern("cdr"), make_primitve_procedure(&prim_scm_cdr)), frame);
+    frame = scm_cons(scm_cons(intern("eval"), make_primitve_procedure(&prim_scm_eval)), frame);
+    frame = scm_cons(scm_cons(intern("interaction-environment"), make_primitve_procedure(&prim_scm_interaction_environment)), frame);
+    env = scm_cons(frame, scm_nil);
 
-    struct scm_obj* port = scm_current_input_port();
-    struct scm_obj* exp = NULL;
+    /* struct scm_obj* port = scm_current_input_port(); */
+    /* struct scm_obj* exp = NULL; */
     while (true) {
-        printf("> ");
-        exp = scm_read(port);
+        char* input = readline("> ");
+        if (!input) {
+            printf("\nBye\n");
+            break;
+        }
+        add_history(input);
+        struct scm_obj* port = scm_open_input_string(create_string(input));
+        struct scm_obj* exp = scm_read(port);
         print_exp(scm_eval(exp, env));
         printf("\n");
+        /* printf("> "); */
+        /* exp = scm_read(port); */
+        /* print_exp(scm_eval(exp, env)); */
     }
 }

@@ -1,6 +1,8 @@
 CC=gcc
 CFLAGS=-std=c11 -g -Wall -Wextra -Wpedantic -Wshadow -MMD
 
+mopl: LDLIBS += -lreadline
+
 tests/test_%: LDLIBS += -lcmocka
 tests/test_%: LDFLAGS += -Wl,--wrap=exit_with_error
 

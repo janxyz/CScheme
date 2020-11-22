@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "obj.h"
@@ -84,9 +85,26 @@ struct scm_obj* prim_scm_interaction_environment(struct scm_obj* const args)
     return env;
 }
 
-int main(void)
+int main(int argc, char** argv)
 {
-    printf("mopl 1.0\n");
+    // Default mode when no arguments are given
+    bool interactive = true;
+    char* input_file = NULL;
+
+    if (argc == 2) {
+        if (strcmp(argv[0], "-i") != 0) {
+            interactive = false;
+            input_file = argv[1];
+        }
+    } else if (argc == 3) {
+        if (strcmp(argv[1], "-i") == 0) {
+            input_file = argv[2];
+        } else {
+            interactive = false;
+            input_file = argv[1];
+        }
+    }
+
     init_symbol_table();
     init_ports();
 
@@ -100,21 +118,30 @@ int main(void)
     frame = scm_cons(scm_cons(intern("interaction-environment"), make_primitve_procedure(&prim_scm_interaction_environment)), frame);
     env = scm_cons(frame, scm_nil);
 
-    /* struct scm_obj* port = scm_current_input_port(); */
-    /* struct scm_obj* exp = NULL; */
-    while (true) {
-        char* input = readline("> ");
-        if (!input) {
-            printf("\nBye\n");
-            break;
-        }
-        add_history(input);
-        struct scm_obj* port = scm_open_input_string(create_string(input));
-        struct scm_obj* exp = scm_read(port);
+    // Evaluate input file
+    if (input_file != NULL) {
+        struct scm_obj* input_file_string = create_string(input_file);
+        struct scm_obj* input_file_port = scm_open_input_file(input_file_string);
+        struct scm_obj* exp = scm_read(input_file_port);
         print_exp(scm_eval(exp, env));
         printf("\n");
-        /* printf("> "); */
-        /* exp = scm_read(port); */
-        /* print_exp(scm_eval(exp, env)); */
+    }
+
+    // Run REPL
+    if (interactive) {
+        printf("mopl 1.0\n");
+        while (true) {
+            char* input = readline("> ");
+            if (!input) {
+                printf("\nBye\n");
+                break;
+            }
+            add_history(input);
+            struct scm_obj* port = scm_open_input_string(create_string(input));
+            struct scm_obj* exp = scm_read(port);
+            print_exp(scm_eval(exp, env));
+            printf("\n");
+            free(input);
+        }
     }
 }

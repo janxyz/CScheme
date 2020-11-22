@@ -21,7 +21,7 @@ static bool is_identifier_subsequent(int c);
 
 struct lexer {
     struct scm_port* port;
-    char token_buffer[512];
+    char token_buffer[MAX_TOKEN_LENGTH];
     size_t buffer_pos;
     /* keep this around so the parser doesn't have to */
     struct token* peeked_token;

@@ -129,7 +129,6 @@ int main(int argc, char** argv)
 
     // Run REPL
     if (interactive) {
-        printf("mopl 1.0\n");
         while (true) {
             char* input = readline("> ");
             if (!input) {

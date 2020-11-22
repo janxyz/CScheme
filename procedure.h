@@ -1,5 +1,5 @@
-#ifndef MOPL_PROCEDURE_H
-#define MOPL_PROCEDURE_H
+#ifndef CSCHEME_PROCEDURE_H
+#define CSCHEME_PROCEDURE_H
 
 #include "obj.h"
 #include <stdbool.h>
@@ -17,5 +17,5 @@ struct scm_obj* scm_procedure_environment(struct scm_obj const* const x);
 struct scm_obj* make_primitve_procedure(primitive_function function);
 primitive_function primitive_procedure_function(struct scm_obj const* const x);
 
-/* #define MOPL_PROCEDURE_H */
+/* #define CSCHEME_PROCEDURE_H */
 #endif

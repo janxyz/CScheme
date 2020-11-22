@@ -1,5 +1,5 @@
-#ifndef MOPL_PAIR_H
-#define MOPL_PAIR_H
+#ifndef CSCHEME_PAIR_H
+#define CSCHEME_PAIR_H
 
 #include "obj.h"
 
@@ -10,5 +10,5 @@ struct scm_obj* scm_cons(struct scm_obj* const x, struct scm_obj* const y);
 struct scm_obj* scm_car(struct scm_obj const* const x);
 struct scm_obj* scm_cdr(struct scm_obj const* const x);
 
-/* #define MOPL_PAIR_H */
+/* #define CSCHEME_PAIR_H */
 #endif

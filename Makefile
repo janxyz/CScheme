@@ -1,7 +1,7 @@
 CC=gcc
 CFLAGS=-std=c11 -g -Wall -Wextra -Wpedantic -Wshadow -MMD
 
-mopl: LDLIBS += -lreadline
+cscheme: LDLIBS += -lreadline
 
 tests/test_%: LDLIBS += -lcmocka
 tests/test_%: LDFLAGS += -Wl,--wrap=exit_with_error
@@ -14,7 +14,7 @@ tests/test_%: LDFLAGS += -Wl,--wrap=exit_with_error
 src = $(wildcard *.c)
 obj = $(src:.c=.o)
 dep = $(obj:.o=.d)
-bin = mopl
+bin = cscheme
 
 test_src = $(wildcard tests/*.c)
 test_obj = $(test_src:.c=.o)

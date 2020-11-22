@@ -1,5 +1,5 @@
-#ifndef MOPL_PORT_H
-#define MOPL_PORT_H
+#ifndef CSCHEME_PORT_H
+#define CSCHEME_PORT_H
 
 #include "obj.h"
 
@@ -19,5 +19,5 @@ void init_ports(void);
 int read_char(struct scm_port* port);
 int peek_char(struct scm_port* port);
 
-/* #define MOPL_PORT_H */
+/* #define CSCHEME_PORT_H */
 #endif

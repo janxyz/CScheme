@@ -1,5 +1,5 @@
-#ifndef MOPL_LEXER_H
-#define MOPL_LEXER_H
+#ifndef CSCHEME_LEXER_H
+#define CSCHEME_LEXER_H
 
 #include "port.h"
 
@@ -28,5 +28,5 @@ struct lexer* create_lexer(struct scm_port* port);
 struct token* next_token(struct lexer* lexer);
 struct token* peek_token(struct lexer* lexer);
 
-/* #define MOPL_LEXER_H */
+/* #define CSCHEME_LEXER_H */
 #endif

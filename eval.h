@@ -1,5 +1,5 @@
-#ifndef MOPL_EVAL_H
-#define MOPL_EVAL_H
+#ifndef CSCHEME_EVAL_H
+#define CSCHEME_EVAL_H
 
 #include "obj.h"
 // bool
@@ -28,5 +28,5 @@ struct scm_obj* apply(struct scm_obj* procedure, struct scm_obj* arguments);
 struct scm_obj* application_operator(struct scm_obj const* const exp);
 struct scm_obj* application_operands(struct scm_obj const* const exp);
 
-/* #define MOPL_EVAL_H */
+/* #define CSCHEME_EVAL_H */
 #endif

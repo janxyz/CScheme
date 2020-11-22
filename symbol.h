@@ -1,5 +1,5 @@
-#ifndef MOPL_SYMBOL_H
-#define MOPL_SYMBOL_H
+#ifndef CSCHEME_SYMBOL_H
+#define CSCHEME_SYMBOL_H
 
 #include "obj.h"
 
@@ -12,5 +12,5 @@ void init_symbol_table(void);
 struct scm_obj* intern(char* str);
 char* symbol_c_string(struct scm_symbol* symbol);
 
-/* #define MOPL_SYMBOL_H */
+/* #define CSCHEME_SYMBOL_H */
 #endif

@@ -1,5 +1,5 @@
-#ifndef MOPL_OBJ_H
-#define MOPL_OBJ_H
+#ifndef CSCHEME_OBJ_H
+#define CSCHEME_OBJ_H
 
 enum {
     TYPE_SYMBOL,
@@ -29,5 +29,5 @@ struct scm_obj* scm_eq_p(struct scm_obj const* const x, struct scm_obj const* co
 struct scm_obj* scm_null_p(struct scm_obj const* const x);
 struct scm_obj* scm_boolean_p(struct scm_obj const* const x);
 
-/* MOPL_OBJ_H */
+/* CSCHEME_OBJ_H */
 #endif

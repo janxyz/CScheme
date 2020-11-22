@@ -21,9 +21,9 @@ struct scm_obj {
     scm_obj_header;
 };
 
-struct scm_obj* const scm_nil;
-struct scm_obj* const scm_false;
-struct scm_obj* const scm_true;
+extern struct scm_obj* const scm_nil;
+extern struct scm_obj* const scm_false;
+extern struct scm_obj* const scm_true;
 
 struct scm_obj* scm_eq_p(struct scm_obj const* const x, struct scm_obj const* const y);
 struct scm_obj* scm_null_p(struct scm_obj const* const x);

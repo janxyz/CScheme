@@ -32,8 +32,11 @@ $(test_bin): $(filter-out $(bin:=.o),$(obj))
 
 .PHONY: all clean test
 
-tests: $(test_bin)
-	@for f in $^; do ./$$f; done
+# Pattern to run single test executable
+run_test_%: tests/test_%
+	$<
+
+test: $(test_bin:tests/%=run_%)
 
 clean:
 	$(RM) $(obj) $(dep) $(bin)

@@ -139,9 +139,11 @@ int main(int argc, char** argv)
             }
             add_history(input);
             struct scm_obj* port = scm_open_input_string(create_string(input));
-            struct scm_obj* exp = scm_read(port);
-            print_exp(scm_eval(exp, env));
-            printf("\n");
+            struct scm_obj* exp;
+            while ((exp = scm_read(port)) != NULL) {
+                print_exp(scm_eval(exp, env));
+                printf("\n");
+            }
             free(input);
         }
     }

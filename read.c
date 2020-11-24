@@ -29,7 +29,9 @@ struct scm_obj* scm_read(struct scm_obj* const port)
 bool parse_expr(struct lexer* const lexer, struct scm_obj** const obj)
 {
     struct token* t = next_token(lexer);
-    if (t->type == TOK_LPAREN) {
+    if (t == NULL) {
+        return NULL;
+    } else if (t->type == TOK_LPAREN) {
         return parse_list(lexer, obj);
     } else if (t->type == TOK_BOOLEAN) {
         if (strcmp(t->str, "#t") == 0) {

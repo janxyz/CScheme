@@ -14,10 +14,12 @@ static struct token* lex_token(struct lexer* l);
 static struct token* lex_whitespace(struct lexer* l);
 static struct token* lex_identifier(struct lexer* l);
 static struct token* lex_number_sign(struct lexer* l);
+static struct token* lex_string(struct lexer* const l);
 static struct token* accept_token(struct lexer* l, enum token_type type);
 static bool is_delimiter(int c);
 static bool is_identifier_initial(int c);
 static bool is_identifier_subsequent(int c);
+static bool is_string_delimiter(int c);
 
 struct lexer {
     struct scm_port* port;
@@ -95,6 +97,10 @@ static struct token* lex_token(struct lexer* const l)
         return lex_number_sign(l);
     } else if (is_identifier_initial(c)) {
         return lex_identifier(l);
+    } else if (is_string_delimiter(c)) {
+        // Do not include string delimiter in token string
+        l->buffer_pos = 0;
+        return lex_string(l);
     } else if (c == EOF) {
         return NULL;
     } else {
@@ -133,6 +139,31 @@ static struct token* lex_number_sign(struct lexer* l)
     return NULL;
 }
 
+static struct token* lex_string(struct lexer* const l)
+{
+    int c;
+    int prev_c = - 1;
+    while (true) {
+        c = lexer_getc(l);
+        if (c == EOF) {
+            exit_with_error("String without closing delimiter\n");
+            return NULL;
+        } else if (is_string_delimiter(c)) {
+            // Check if delimiter was escaped
+            if (prev_c == '\\') {
+                // Overwrite escape character with delimiter character
+                l->buffer_pos -= 1;
+                l->token_buffer[l->buffer_pos - 1] = '"';
+            } else {
+                // Do not include string delimiter in token string
+                l->buffer_pos -= 1;
+                return accept_token(l, TOK_STRING);
+            }
+        }
+        prev_c = c;
+    }
+}
+
 static struct token* accept_token(struct lexer* const l, enum token_type type)
 {
     struct token* t = malloc(sizeof(*t));
@@ -158,4 +189,9 @@ static bool is_identifier_subsequent(int c)
 {
     return is_identifier_initial(c) || isdigit(c) ||
         c == '.' || c == '+' || c == '-' || c == '@';
+}
+
+static bool is_string_delimiter(int c)
+{
+    return c == '"';
 }

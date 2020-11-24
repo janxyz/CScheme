@@ -1,6 +1,7 @@
 #include "read.h"
 #include "lexer.h"
 #include "symbol.h"
+#include "string.h"
 #include "pair.h"
 #include "error.h"
 #include <stdlib.h>
@@ -40,6 +41,9 @@ bool parse_expr(struct lexer* const lexer, struct scm_obj** const obj)
         }
     } else if (t->type == TOK_IDENTIFIER) {
         *obj = intern(t->str);
+        return true;
+    } else if (t->type == TOK_STRING) {
+        *obj = create_string(t->str);
         return true;
     }
     exit_with_error("Unknown token\n");

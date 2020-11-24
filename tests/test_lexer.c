@@ -14,7 +14,7 @@ void __wrap_exit_with_error(char const* format, ...)
     check_expected(format);
 }
 
-static void test_lex_empty_string()
+static void test_lex_empty_input_string()
 {
     init_ports();
     struct scm_obj* string = create_string("");
@@ -94,14 +94,64 @@ static void test_lex_number_sign_boolean()
     assert_string_equal(token->str, "#f");
 }
 
+static void test_lex_string()
+{
+    init_ports();
+    struct scm_obj* string = create_string("\"one\"");
+    struct scm_obj* port = scm_open_input_string(string);
+    struct lexer* lexer = create_lexer((void*)port);
+
+    struct token* token = next_token(lexer);
+    assert_int_equal(token->type, TOK_STRING);
+    assert_string_equal(token->str, "one");
+}
+
+static void test_lex_empty_string()
+{
+    init_ports();
+    struct scm_obj* string = create_string("\"\"");
+    struct scm_obj* port = scm_open_input_string(string);
+    struct lexer* lexer = create_lexer((void*)port);
+
+    struct token* token = next_token(lexer);
+    assert_int_equal(token->type, TOK_STRING);
+    assert_string_equal(token->str, "");
+}
+
+static void test_lex_string_with_quote_character()
+{
+    init_ports();
+    struct scm_obj* string = create_string("\"\\\"\"");
+    struct scm_obj* port = scm_open_input_string(string);
+    struct lexer* lexer = create_lexer((void*)port);
+
+    struct token* token = next_token(lexer);
+    assert_int_equal(token->type, TOK_STRING);
+    assert_string_equal(token->str, "\"");
+}
+
+static void test_lex_string_unclosed()
+{
+    expect_string(__wrap_exit_with_error, format, "String without closing delimiter\n");
+    init_ports();
+    struct scm_obj* string = create_string("\"one");
+    struct scm_obj* port = scm_open_input_string(string);
+    struct lexer* lexer = create_lexer((void*)port);
+    next_token(lexer);
+}
+
 int main(void)
 {
     const struct CMUnitTest tests[] = {
-        cmocka_unit_test(test_lex_empty_string),
+        cmocka_unit_test(test_lex_empty_input_string),
         cmocka_unit_test(test_lex_parentheses),
         cmocka_unit_test(test_lex_whitespace),
         cmocka_unit_test(test_lex_identifier),
         cmocka_unit_test(test_lex_number_sign_boolean),
+        cmocka_unit_test(test_lex_string),
+        cmocka_unit_test(test_lex_empty_string),
+        cmocka_unit_test(test_lex_string_with_quote_character),
+        cmocka_unit_test(test_lex_string_unclosed),
     };
     return cmocka_run_group_tests(tests, NULL, NULL);
 }

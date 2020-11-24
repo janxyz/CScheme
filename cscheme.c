@@ -20,6 +20,8 @@ void print_helper(struct scm_obj* obj, bool is_cdr)
         printf("%s", symbol_c_string((void*)obj));
     } else if (obj->type == TYPE_BOOLEAN) {
         printf("%s", obj == scm_true ? "#t" : "#f");
+    } else if (obj->type == TYPE_STRING) {
+        printf("\"%s\"", c_string((void*)obj));
     } else if (obj->type == TYPE_NIL && !is_cdr) {
         printf("()");
     } else if (obj->type == TYPE_PROCEDURE || obj->type == TYPE_PRIMITIVE_PROCEDURE) {

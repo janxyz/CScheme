@@ -72,6 +72,16 @@ static void test_read_boolean()
     assert_ptr_equal(exp, scm_false);
 }
 
+static void test_read_string()
+{
+    init_symbol_table();
+    init_ports();
+    struct scm_obj* string = create_string("\"one\"");
+    struct scm_obj* port = scm_open_input_string(string);
+    struct scm_obj* exp = scm_read(port);
+    assert_int_equal(exp->type, TYPE_STRING);
+}
+
 int main(void)
 {
     const struct CMUnitTest tests[] = {
@@ -80,6 +90,7 @@ int main(void)
         cmocka_unit_test(test_read_quoted_empty_list),
         cmocka_unit_test(test_read_symbol_list),
         cmocka_unit_test(test_read_boolean),
+        cmocka_unit_test(test_read_string),
     };
     return cmocka_run_group_tests(tests, NULL, NULL);
 }

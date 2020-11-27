@@ -80,6 +80,32 @@ static void test_lex_identifier()
     assert_null(next_token(lexer));
 }
 
+static void test_lex_identifier_plus()
+{
+    init_ports();
+
+    struct scm_obj* string = create_string("+");
+    struct scm_obj* port = scm_open_input_string(string);
+    struct lexer* lexer = create_lexer((void*)port);
+
+    struct token* token = next_token(lexer);
+    assert_int_equal(token->type, TOK_IDENTIFIER);
+    assert_string_equal(token->str, "+");
+}
+
+static void test_lex_identifier_minus()
+{
+    init_ports();
+
+    struct scm_obj* string = create_string("-");
+    struct scm_obj* port = scm_open_input_string(string);
+    struct lexer* lexer = create_lexer((void*)port);
+
+    struct token* token = next_token(lexer);
+    assert_int_equal(token->type, TOK_IDENTIFIER);
+    assert_string_equal(token->str, "-");
+}
+
 static void test_lex_number_sign_boolean()
 {
     init_ports();
@@ -140,6 +166,30 @@ static void test_lex_string_unclosed()
     next_token(lexer);
 }
 
+static void test_lex_unsigned_integer()
+{
+    init_ports();
+    struct scm_obj* string = create_string("123");
+    struct scm_obj* port = scm_open_input_string(string);
+    struct lexer* lexer = create_lexer((void*)port);
+
+    struct token* token = next_token(lexer);
+    assert_int_equal(token->type, TOK_NUMBER);
+    assert_string_equal(token->str, "123");
+}
+
+static void test_lex_signed_integer()
+{
+    init_ports();
+    struct scm_obj* string = create_string("-123");
+    struct scm_obj* port = scm_open_input_string(string);
+    struct lexer* lexer = create_lexer((void*)port);
+
+    struct token* token = next_token(lexer);
+    assert_int_equal(token->type, TOK_NUMBER);
+    assert_string_equal(token->str, "-123");
+}
+
 int main(void)
 {
     const struct CMUnitTest tests[] = {
@@ -147,11 +197,15 @@ int main(void)
         cmocka_unit_test(test_lex_parentheses),
         cmocka_unit_test(test_lex_whitespace),
         cmocka_unit_test(test_lex_identifier),
+        cmocka_unit_test(test_lex_identifier_plus),
+        cmocka_unit_test(test_lex_identifier_minus),
         cmocka_unit_test(test_lex_number_sign_boolean),
         cmocka_unit_test(test_lex_string),
         cmocka_unit_test(test_lex_empty_string),
         cmocka_unit_test(test_lex_string_with_quote_character),
         cmocka_unit_test(test_lex_string_unclosed),
+        cmocka_unit_test(test_lex_unsigned_integer),
+        cmocka_unit_test(test_lex_signed_integer),
     };
     return cmocka_run_group_tests(tests, NULL, NULL);
 }

@@ -2,16 +2,20 @@
 #include "lexer.h"
 #include "symbol.h"
 #include "string.h"
+#include "number.h"
 #include "pair.h"
 #include "error.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdint.h>
+#include <errno.h>
 
 static bool parse_expr(struct lexer* lexer, struct scm_obj**);
 static bool parse_list(struct lexer* lexer, struct scm_obj** obj);
 static bool parse_list_item(struct lexer* lexer, struct scm_obj** obj);
+static struct scm_obj* create_number_from_token(struct token* t);
 
 struct scm_obj* scm_read(struct scm_obj* const port)
 {
@@ -41,6 +45,9 @@ bool parse_expr(struct lexer* const lexer, struct scm_obj** const obj)
             *obj = scm_false;
             return true;
         }
+    } else if (t->type == TOK_NUMBER) {
+        *obj = create_number_from_token(t);
+        return true;
     } else if (t->type == TOK_IDENTIFIER) {
         *obj = intern(t->str);
         return true;
@@ -111,4 +118,15 @@ static bool parse_list_item(struct lexer* const lexer, struct scm_obj** const ob
     }
     *obj = scm_cons(car, cdr);
     return true;
+}
+
+static struct scm_obj* create_number_from_token(struct token* t)
+{
+    errno = 0;
+    char* str_end;
+    const int64_t i = strtol(t->str, &str_end, 10);
+    if (errno == ERANGE) {
+        exit_with_error("Number range error\n");
+    }
+    return create_number(i);
 }

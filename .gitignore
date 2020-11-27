@@ -8,3 +8,4 @@ test_eval
 test_utils
 test_lexer
 test_parser
+test_number

@@ -15,6 +15,9 @@ static struct token* lex_whitespace(struct lexer* l);
 static struct token* lex_identifier(struct lexer* l);
 static struct token* lex_number_sign(struct lexer* l);
 static struct token* lex_string(struct lexer* const l);
+static struct token* lex_number(struct lexer* const l);
+static struct token* lex_plus(struct lexer* const l);
+static struct token* lex_minus(struct lexer* const l);
 static struct token* accept_token(struct lexer* l, enum token_type type);
 static bool is_delimiter(int c);
 static bool is_identifier_initial(int c);
@@ -97,6 +100,12 @@ static struct token* lex_token(struct lexer* const l)
         return lex_number_sign(l);
     } else if (is_identifier_initial(c)) {
         return lex_identifier(l);
+    } else if (c == '+') {
+        return lex_plus(l);
+    } else if (c == '-') {
+        return lex_minus(l);
+    } else if (isdigit(c)) {
+        return lex_number(l);
     } else if (is_string_delimiter(c)) {
         // Do not include string delimiter in token string
         l->buffer_pos = 0;
@@ -162,6 +171,30 @@ static struct token* lex_string(struct lexer* const l)
         }
         prev_c = c;
     }
+}
+
+static struct token* lex_number(struct lexer* const l)
+{
+    while (isdigit(lexer_peek(l))) {
+        lexer_getc(l);
+    }
+    return accept_token(l, TOK_NUMBER);
+}
+
+static struct token* lex_plus(struct lexer* const l)
+{
+    if (isdigit(lexer_peek(l))) {
+        return lex_number(l);
+    }
+    return accept_token(l, TOK_IDENTIFIER);
+}
+
+static struct token* lex_minus(struct lexer* const l)
+{
+    if (isdigit(lexer_peek(l))) {
+        return lex_number(l);
+    }
+    return accept_token(l, TOK_IDENTIFIER);
 }
 
 static struct token* accept_token(struct lexer* const l, enum token_type type)

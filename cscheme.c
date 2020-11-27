@@ -1,12 +1,15 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
+// PRId64
+#include <inttypes.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "obj.h"
 #include "pair.h"
 #include "symbol.h"
 #include "string.h"
+#include "number.h"
 #include "port.h"
 #include "read.h"
 #include "eval.h"
@@ -22,6 +25,8 @@ void print_helper(struct scm_obj* obj, bool is_cdr)
         printf("%s", obj == scm_true ? "#t" : "#f");
     } else if (obj->type == TYPE_STRING) {
         printf("\"%s\"", c_string((void*)obj));
+    } else if (obj->type == TYPE_NUMBER) {
+        printf("%" PRId64, get_number_value((void*)obj));
     } else if (obj->type == TYPE_NIL && !is_cdr) {
         printf("()");
     } else if (obj->type == TYPE_PROCEDURE || obj->type == TYPE_PRIMITIVE_PROCEDURE) {
@@ -79,6 +84,11 @@ struct scm_obj* prim_scm_eval(struct scm_obj* const args)
     return scm_eval(exp, env);
 }
 
+struct scm_obj* prim_num_add(struct scm_obj* const args)
+{
+    return scm_number_addition(args);
+}
+
 struct scm_obj* env = NULL;
 
 struct scm_obj* prim_scm_interaction_environment(struct scm_obj* const args)
@@ -118,6 +128,7 @@ int main(int argc, char** argv)
     frame = scm_cons(scm_cons(intern("cdr"), make_primitve_procedure(&prim_scm_cdr)), frame);
     frame = scm_cons(scm_cons(intern("eval"), make_primitve_procedure(&prim_scm_eval)), frame);
     frame = scm_cons(scm_cons(intern("interaction-environment"), make_primitve_procedure(&prim_scm_interaction_environment)), frame);
+    frame = scm_cons(scm_cons(intern("+"), make_primitve_procedure(&prim_num_add)), frame);
     env = scm_cons(frame, scm_nil);
 
     // Evaluate input file

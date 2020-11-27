@@ -2,6 +2,7 @@
 #include "symbol.h"
 #include "pair.h"
 #include "string.h"
+#include "number.h"
 #include "procedure.h"
 #include "utils.h"
 #include "error.h"
@@ -72,7 +73,8 @@ bool is_self_evaluating(struct scm_obj const* const exp)
 {
     return (
         scm_boolean_p(exp) == scm_true ||
-        scm_string_p(exp) == scm_true
+        scm_string_p(exp) == scm_true ||
+        scm_number_p(exp) == scm_true
     );
 }
 

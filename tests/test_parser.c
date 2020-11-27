@@ -82,6 +82,16 @@ static void test_read_string()
     assert_int_equal(exp->type, TYPE_STRING);
 }
 
+static void test_read_number()
+{
+    init_symbol_table();
+    init_ports();
+    struct scm_obj* string = create_string("123");
+    struct scm_obj* port  = scm_open_input_string(string);
+    struct scm_obj* exp = scm_read(port);
+    assert_int_equal(exp->type, TYPE_NUMBER);
+}
+
 int main(void)
 {
     const struct CMUnitTest tests[] = {
@@ -91,6 +101,7 @@ int main(void)
         cmocka_unit_test(test_read_symbol_list),
         cmocka_unit_test(test_read_boolean),
         cmocka_unit_test(test_read_string),
+        cmocka_unit_test(test_read_number),
     };
     return cmocka_run_group_tests(tests, NULL, NULL);
 }

@@ -59,7 +59,7 @@ struct scm_obj* scm_procedure_environment(struct scm_obj const* const x)
     return ((struct scm_procedure*)x)->env;
 }
 
-struct scm_obj* make_primitve_procedure(primitive_function function)
+struct scm_obj* make_primitive_procedure(primitive_function function)
 {
     struct scm_primitive_procedure* p = malloc(sizeof(*p));
     p->type = TYPE_PRIMITIVE_PROCEDURE;
@@ -70,7 +70,7 @@ struct scm_obj* make_primitve_procedure(primitive_function function)
 primitive_function primitive_procedure_function(struct scm_obj const* const x)
 {
     if (!is_primitive(x)) {
-        exit_with_error("Type error: primitve procedure expected\n");
+        exit_with_error("Type error: primitive procedure expected\n");
     }
     return ((struct scm_primitive_procedure*)x)->function;
 }

@@ -122,13 +122,13 @@ int main(int argc, char** argv)
 
     // Setup environment
     struct scm_obj* frame = scm_nil;
-    frame = scm_cons(scm_cons(intern("eq?"), make_primitve_procedure(&prim_scm_eq_p)), frame);
-    frame = scm_cons(scm_cons(intern("cons"), make_primitve_procedure(&prim_scm_cons)), frame);
-    frame = scm_cons(scm_cons(intern("car"), make_primitve_procedure(&prim_scm_car)), frame);
-    frame = scm_cons(scm_cons(intern("cdr"), make_primitve_procedure(&prim_scm_cdr)), frame);
-    frame = scm_cons(scm_cons(intern("eval"), make_primitve_procedure(&prim_scm_eval)), frame);
-    frame = scm_cons(scm_cons(intern("interaction-environment"), make_primitve_procedure(&prim_scm_interaction_environment)), frame);
-    frame = scm_cons(scm_cons(intern("+"), make_primitve_procedure(&prim_num_add)), frame);
+    frame = scm_cons(scm_cons(intern("eq?"), make_primitive_procedure(&prim_scm_eq_p)), frame);
+    frame = scm_cons(scm_cons(intern("cons"), make_primitive_procedure(&prim_scm_cons)), frame);
+    frame = scm_cons(scm_cons(intern("car"), make_primitive_procedure(&prim_scm_car)), frame);
+    frame = scm_cons(scm_cons(intern("cdr"), make_primitive_procedure(&prim_scm_cdr)), frame);
+    frame = scm_cons(scm_cons(intern("eval"), make_primitive_procedure(&prim_scm_eval)), frame);
+    frame = scm_cons(scm_cons(intern("interaction-environment"), make_primitive_procedure(&prim_scm_interaction_environment)), frame);
+    frame = scm_cons(scm_cons(intern("+"), make_primitive_procedure(&prim_num_add)), frame);
     env = scm_cons(frame, scm_nil);
 
     // Evaluate input file

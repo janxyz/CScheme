@@ -120,7 +120,7 @@ struct scm_obj* primitive_fn(struct scm_obj* args)
 static void test_eval_primitive_procedure()
 {
     init_symbol_table();
-    struct scm_obj* proc = make_primitve_procedure(&primitive_fn);
+    struct scm_obj* proc = make_primitive_procedure(&primitive_fn);
     struct scm_obj* frame = scm_cons(scm_cons(intern("fn"), proc), scm_nil);
     struct scm_obj* env = scm_cons(frame, scm_nil);
     struct scm_obj* arg = scm_true;

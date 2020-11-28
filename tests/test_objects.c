@@ -136,7 +136,7 @@ static struct scm_obj* primitive_fn(struct scm_obj* arguments)
 
 static void test_primitive_procedure()
 {
-    struct scm_obj* proc = make_primitve_procedure(&primitive_fn);
+    struct scm_obj* proc = make_primitive_procedure(&primitive_fn);
     assert_ptr_equal(scm_procedure_p(proc), scm_true);
     assert_true(is_primitive(proc));
     primitive_function fn = primitive_procedure_function(proc);

@@ -14,7 +14,7 @@ struct scm_obj* scm_procedure_parameters(struct scm_obj const* const x);
 struct scm_obj* scm_procedure_body(struct scm_obj const* const x);
 struct scm_obj* scm_procedure_environment(struct scm_obj const* const x);
 
-struct scm_obj* make_primitve_procedure(primitive_function function);
+struct scm_obj* make_primitive_procedure(primitive_function function);
 primitive_function primitive_procedure_function(struct scm_obj const* const x);
 
 /* #define CSCHEME_PROCEDURE_H */
